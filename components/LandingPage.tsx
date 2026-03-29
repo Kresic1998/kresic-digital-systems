@@ -407,10 +407,12 @@ function ProjectsSection() {
               </p>
               <Link
                 href="/demo/market-analytics"
-                className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 underline-offset-4 transition hover:underline dark:text-emerald-400"
+                className="mt-5 inline-flex w-fit items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-900/25 transition hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-900/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 dark:bg-emerald-500 dark:shadow-emerald-950/50 dark:hover:bg-emerald-400 dark:hover:shadow-emerald-950/60"
               >
                 {t.nav.liveDemo}
-                <span aria-hidden>→</span>
+                <span aria-hidden className="text-base leading-none">
+                  →
+                </span>
               </Link>
               <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-500 dark:text-slate-500">
                 {p.demoIntro}
@@ -421,10 +423,10 @@ function ProjectsSection() {
             </p>
           </div>
         </FadeIn>
-        <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-8">
           {p.featured.map((project, index) => (
             <FadeIn key={project.name} delay={index * 0.12} className="min-h-0">
-              <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-sm transition hover:border-zinc-300 hover:shadow-md dark:border-white/[0.06] dark:bg-slate-900/40 dark:shadow-none dark:hover:border-white/[0.12]">
+              <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-sm transition duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-white/[0.06] dark:bg-slate-900/40 dark:shadow-none dark:hover:border-white/[0.14] dark:hover:shadow-2xl dark:hover:shadow-black/50">
                 <div
                   className={`relative aspect-[16/10] bg-gradient-to-br ${projectAccents[index] ?? projectAccents[0]} from-zinc-100 to-zinc-50 dark:from-slate-800/80 dark:to-slate-900`}
                 >
@@ -441,12 +443,22 @@ function ProjectsSection() {
                   <h3 className="mt-2 text-lg font-semibold text-zinc-900 dark:text-white">
                     {project.name}
                   </h3>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-zinc-600 dark:text-slate-400">
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-slate-400">
                     {project.summary}
                   </p>
-                  <span className="mt-6 inline-flex w-fit items-center text-sm font-semibold text-zinc-900 opacity-60 dark:text-white">
-                    {p.detailsSoon}
-                  </span>
+                  <p className="mt-4 text-sm font-medium leading-relaxed text-zinc-800 dark:text-slate-200">
+                    {project.outcome}
+                  </p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={`${project.name}-${tag}`}
+                        className="rounded-md border border-zinc-200/80 bg-zinc-100/90 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-zinc-700 dark:border-white/10 dark:bg-terminal-800/50 dark:text-slate-300"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </article>
             </FadeIn>

@@ -35,10 +35,15 @@ export type LandingDictionary = {
     intro: string;
     tagline: string;
     caseStudy: string;
-    detailsSoon: string;
     legalNote: string;
     demoIntro: string;
-    featured: readonly { role: string; name: string; summary: string }[];
+    featured: readonly {
+      role: string;
+      name: string;
+      summary: string;
+      outcome: string;
+      tags: readonly string[];
+    }[];
   };
   opSec: {
     title: string;

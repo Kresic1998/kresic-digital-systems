@@ -58,24 +58,29 @@
     "intro": "Selected examples across maintenance, automation, and analytics—from stable web stacks to data-driven tooling.",
     "tagline": "Maintenance · automation · analytics tools",
     "caseStudy": "Case study",
-    "detailsSoon": "Details soon",
     "legalNote": "Important notice: Our financial solutions are for analysis and information purposes only. We do not build systems for automated trade execution (trading bots).",
     "demoIntro": "Interactive mock terminal: correlation heatmap and scanner UI—deterministic demo data only.",
     "featured": [
       {
         "role": "Operations & reporting",
         "name": "Automated financial & inventory dashboards",
-        "summary": "Centralized metrics, near real-time stock visibility, and automated reporting—for teams that need less manual spreadsheet work and more operational clarity."
+        "summary": "Centralized metrics, near real-time stock visibility, and automated reporting—for teams that need less manual spreadsheet work and more operational clarity.",
+        "outcome": "Python-based reporting pipelines consolidate ERP exports, databases, and spreadsheets into scheduled leadership packs—cutting manual close work and shrinking time-to-insight from days to hours.",
+        "tags": ["Python", "pandas", "REST APIs", "Automation", "Reporting"]
       },
       {
         "role": "Web & commerce",
         "name": "Scalable storefront & portal architecture",
-        "summary": "Fast Next.js front ends, clean API integrations, and dependable payment flows—from integration through launch with stability as the default."
+        "summary": "Fast Next.js front ends, clean API integrations, and dependable payment flows—from integration through launch with stability as the default.",
+        "outcome": "High-performance Next.js builds with typed boundaries, edge-ready deployments, and accessible UI patterns—Core Web Vitals–oriented delivery your team can extend without rework.",
+        "tags": ["Next.js", "TypeScript", "Tailwind CSS", "Vercel", "APIs"]
       },
       {
         "role": "Analytics & research",
         "name": "Data-driven market & strategy tooling",
-        "summary": "Indicators, scripts, and backtesting setups to interpret markets—as decision support, not automated order execution."
+        "summary": "Indicators, scripts, and backtesting setups to interpret markets—as decision support, not automated order execution.",
+        "outcome": "We build research-grade indicators, notebooks, and backtests for discretionary decisions only. We do not build trading bots or any system that places or routes live orders—deliverables are analysis and decision-support tooling, full stop.",
+        "tags": ["Quant", "Python", "TradingView", "Research", "Backtesting"]
       }
     ]
   },

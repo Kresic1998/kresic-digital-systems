@@ -58,24 +58,29 @@
     "intro": "Ausgewählte Beispiele aus Wartung, Automatisierung und Analyse—von stabilen Web-Stacks bis zu datengetriebenen Hilfsmitteln.",
     "tagline": "Wartung · Automatisierung · Analyse-Tools",
     "caseStudy": "Fallstudie",
-    "detailsSoon": "Details folgen",
     "legalNote": "Wichtiger Hinweis: Unsere Finanzlösungen dienen ausschließlich Analyse- und Informationszwecken. Wir entwickeln keine Systeme für die automatische Handelsausführung (Trading Bots).",
     "demoIntro": "Interaktives Mock-Terminal: Korrelations-Heatmap und Scanner-Oberfläche—nur deterministische Demo-Daten.",
     "featured": [
       {
         "role": "Operations & Reporting",
         "name": "Automatisierte Finanz- und Bestandsübersichten",
-        "summary": "Zentrale Kennzahlen, Echtzeit-Bestände und automatisierte Reports—für Teams, die weniger manuelle Excel-Arbeit und mehr Klarheit im Tagesgeschäft brauchen."
+        "summary": "Zentrale Kennzahlen, Echtzeit-Bestände und automatisierte Reports—für Teams, die weniger manuelle Excel-Arbeit und mehr Klarheit im Tagesgeschäft brauchen.",
+        "outcome": "Python-gestützte Reporting-Pipelines bündeln ERP-Exporte, Datenbanken und Tabellen in terminierte Führungsberichte—weniger manueller Abschlussaufwand und kürzere Zeit bis zur belastbaren Einsicht.",
+        "tags": ["Python", "pandas", "REST-APIs", "Automatisierung", "Reporting"]
       },
       {
         "role": "Web & Commerce",
         "name": "Skalierbare Shop- und Portalarchitektur",
-        "summary": "Schnelle Next.js-Oberflächen, saubere API-Anbindungen und zuverlässiger Zahlungsfluss—von Integration bis Go-live mit Fokus auf Stabilität."
+        "summary": "Schnelle Next.js-Oberflächen, saubere API-Anbindungen und zuverlässiger Zahlungsfluss—von Integration bis Go-live mit Fokus auf Stabilität.",
+        "outcome": "Hochperformante Next.js-Umsetzungen mit typisierten Schnittstellen, edge-tauglichem Deployment und barrierefreien UI-Mustern—ausgerichtet auf Core Web Vitals und wartbare Erweiterbarkeit.",
+        "tags": ["Next.js", "TypeScript", "Tailwind CSS", "Vercel", "APIs"]
       },
       {
         "role": "Analyse & Research",
         "name": "Datengetriebene Markt- und Strategie-Tools",
-        "summary": "Indikatoren, Skripte und Backtesting-Setups zur Einordnung von Märkten—als Entscheidungshilfe, nicht als automatisierte Handelsausführung."
+        "summary": "Indikatoren, Skripte und Backtesting-Setups zur Einordnung von Märkten—als Entscheidungshilfe, nicht als automatisierte Handelsausführung.",
+        "outcome": "Wir liefern forschungsnahe Indikatoren, Notebooks und Backtests ausschließlich zur diskretionären Entscheidungsfindung. Keine Trading-Bots und keine Systeme zur automatischen Order-Platzierung oder -weiterleitung—nur Analyse- und Entscheidungsunterstützung.",
+        "tags": ["Quant", "Python", "TradingView", "Research", "Backtesting"]
       }
     ]
   },

@@ -16,6 +16,8 @@ const config: Config = {
           border: "rgb(39 39 42 / 0.95)",
           muted: "#94a3b8",
           accent: "#34d399",
+          /** Tag pills on marketing cards (pairs with `/opacity` utilities) */
+          "800": "#1e293b",
         },
       },
       fontFamily: {
