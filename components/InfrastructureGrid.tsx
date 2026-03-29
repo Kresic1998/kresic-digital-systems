@@ -3,7 +3,11 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-export default function InfrastructureGrid() {
+type InfrastructureGridProps = {
+  className?: string;
+};
+
+export default function InfrastructureGrid({ className }: InfrastructureGridProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,7 +35,17 @@ export default function InfrastructureGrid() {
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    const canvas = renderer.domElement;
+    Object.assign(canvas.style, {
+      position: "absolute",
+      left: "0",
+      top: "0",
+      width: "100%",
+      height: "100%",
+      zIndex: "0",
+      display: "block",
+    });
+    container.appendChild(canvas);
 
     // 4. Grid Geometry & Material
     // Plane on the X-Y axis. We will displace the Z axis.
@@ -148,20 +162,25 @@ export default function InfrastructureGrid() {
       geometry.dispose();
       material.dispose();
       
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      if (container.contains(canvas)) {
+        container.removeChild(canvas);
       }
     };
   }, []);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="relative w-full h-48 bg-[#0a0a0a] overflow-hidden rounded-md border border-white/5"
-      style={{ cursor: 'crosshair' }}
+    <div
+      ref={containerRef}
+      className={[
+        "relative isolate w-full min-h-[12rem] h-48 overflow-hidden rounded-md border border-white/5 bg-[#0a0a0a]",
+        className ?? "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      style={{ cursor: "crosshair" }}
     >
       {/* Decorative System Overlay */}
-      <div className="absolute bottom-3 right-3 select-none pointer-events-none flex flex-col items-end">
+      <div className="absolute bottom-3 right-3 z-10 flex flex-col items-end select-none pointer-events-none">
         <span className="text-[10px] text-white/30 font-mono tracking-widest uppercase">
           System.Arch_v2.0
         </span>
@@ -172,7 +191,7 @@ export default function InfrastructureGrid() {
       </div>
       
       {/* Ambient Grid Glow (CSS Fallback/Enhancement) */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent pointer-events-none"></div>
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent"></div>
     </div>
   );
 }

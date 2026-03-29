@@ -5,8 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ContactFormWithConsent } from "@/components/ContactFormWithConsent";
+import DataFlowVisual from "@/components/DataFlowVisual";
 import { FadeIn } from "@/components/FadeIn";
+import InfrastructureGrid from "@/components/InfrastructureGrid";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import MarketPulseVisual from "@/components/MarketPulseVisual";
 import {
   BRAND_NAME,
   GITHUB_URL,
@@ -161,10 +164,10 @@ const opSecIcons: readonly IconComponent[] = [
   IconOpSecDiscretion,
 ];
 
-const projectAccents = [
-  "from-violet-500/20 to-fuchsia-500/10",
-  "from-cyan-500/20 to-emerald-500/10",
-  "from-amber-500/20 to-orange-500/10",
+const projectHeaderVisuals = [
+  DataFlowVisual,
+  InfrastructureGrid,
+  MarketPulseVisual,
 ] as const;
 
 function SiteHeader() {
@@ -424,45 +427,46 @@ function ProjectsSection() {
           </div>
         </FadeIn>
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-8">
-          {p.featured.map((project, index) => (
-            <FadeIn key={project.name} delay={index * 0.12} className="min-h-0">
-              <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-sm transition duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-white/[0.06] dark:bg-slate-900/40 dark:shadow-none dark:hover:border-white/[0.14] dark:hover:shadow-2xl dark:hover:shadow-black/50">
-                <div
-                  className={`relative aspect-[16/10] bg-gradient-to-br ${projectAccents[index] ?? projectAccents[0]} from-zinc-100 to-zinc-50 dark:from-slate-800/80 dark:to-slate-900`}
-                >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="rounded-full border border-zinc-200/80 bg-white/80 px-4 py-1.5 text-xs font-medium uppercase tracking-wider text-zinc-500 backdrop-blur-sm dark:border-white/10 dark:bg-slate-950/60 dark:text-slate-400">
-                      {p.caseStudy}
-                    </span>
+          {p.featured.map((project, index) => {
+            const HeaderVisual = projectHeaderVisuals[index] ?? projectHeaderVisuals[0];
+            return (
+              <FadeIn key={project.name} delay={index * 0.12} className="min-h-0">
+                <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-sm transition duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-white/[0.06] dark:bg-slate-900/40 dark:shadow-none dark:hover:border-white/[0.14] dark:hover:shadow-2xl dark:hover:shadow-black/50">
+                  <div className="relative isolate w-full shrink-0 overflow-hidden bg-zinc-950 dark:bg-black">
+                    <HeaderVisual className="w-full rounded-none border-0 shadow-none ring-0" />
+                    <div
+                      className="pointer-events-none absolute inset-x-0 bottom-0 z-[6] h-px bg-gradient-to-r from-transparent via-zinc-400/35 to-transparent dark:via-white/12"
+                      aria-hidden
+                    />
                   </div>
-                </div>
-                <div className="flex flex-1 flex-col p-6">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-                    {project.role}
-                  </p>
-                  <h3 className="mt-2 text-lg font-semibold text-zinc-900 dark:text-white">
-                    {project.name}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-slate-400">
-                    {project.summary}
-                  </p>
-                  <p className="mt-4 text-sm font-medium leading-relaxed text-zinc-800 dark:text-slate-200">
-                    {project.outcome}
-                  </p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={`${project.name}-${tag}`}
-                        className="rounded-md border border-zinc-200/80 bg-zinc-100/90 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-zinc-700 dark:border-white/10 dark:bg-terminal-800/50 dark:text-slate-300"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  <div className="relative flex flex-1 flex-col border-t border-zinc-200/80 bg-gradient-to-b from-zinc-100/70 to-white p-6 dark:border-white/[0.07] dark:from-slate-950 dark:to-slate-900/40">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                      {project.role}
+                    </p>
+                    <h3 className="mt-2 text-lg font-semibold text-zinc-900 dark:text-white">
+                      {project.name}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-slate-400">
+                      {project.summary}
+                    </p>
+                    <p className="mt-4 text-sm font-medium leading-relaxed text-zinc-800 dark:text-slate-200">
+                      {project.outcome}
+                    </p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {project.tags.map((tag) => (
+                        <span
+                          key={`${project.name}-${tag}`}
+                          className="rounded-md border border-zinc-200/80 bg-zinc-100/90 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-zinc-700 dark:border-white/10 dark:bg-terminal-800/50 dark:text-slate-300"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </article>
-            </FadeIn>
-          ))}
+                </article>
+              </FadeIn>
+            );
+          })}
         </div>
         <FadeIn delay={0.2} className="mt-10 lg:mt-12">
           <p className="max-w-4xl text-xs leading-relaxed text-zinc-500 dark:text-slate-500">

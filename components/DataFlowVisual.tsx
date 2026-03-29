@@ -3,7 +3,11 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-export default function DataFlowVisual() {
+type DataFlowVisualProps = {
+  className?: string;
+};
+
+export default function DataFlowVisual({ className }: DataFlowVisualProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,7 +32,17 @@ export default function DataFlowVisual() {
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    const canvas = renderer.domElement;
+    Object.assign(canvas.style, {
+      position: "absolute",
+      left: "0",
+      top: "0",
+      width: "100%",
+      height: "100%",
+      zIndex: "0",
+      display: "block",
+    });
+    container.appendChild(canvas);
 
     // 3. Particle System Configuration
     const particleCount = 1800;
@@ -157,19 +171,24 @@ export default function DataFlowVisual() {
       geometry.dispose();
       material.dispose();
       
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      if (container.contains(canvas)) {
+        container.removeChild(canvas);
       }
     };
   }, []);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="relative w-full h-48 bg-[#050505] overflow-hidden rounded-lg border border-white/5"
+    <div
+      ref={containerRef}
+      className={[
+        "relative isolate w-full min-h-[12rem] h-48 overflow-hidden rounded-lg border border-white/5 bg-[#050505]",
+        className ?? "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       {/* Technical Overlay */}
-      <div className="absolute top-4 left-4 pointer-events-none select-none">
+      <div className="absolute top-4 left-4 z-10 pointer-events-none select-none">
         <div className="font-mono text-[10px] tracking-widest text-white/40 uppercase">
           Data.Ingestion_v1.0
         </div>
@@ -182,12 +201,12 @@ export default function DataFlowVisual() {
       </div>
 
       {/* Grid Pattern Background for extra depth */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+      <div className="absolute inset-0 z-[1] opacity-[0.03] pointer-events-none" 
         style={{ backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, backgroundSize: '40px 40px' }}>
       </div>
 
       {/* Vignette effect */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050505_90%)] pointer-events-none"></div>
+      <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_center,transparent_0%,#050505_90%)] pointer-events-none"></div>
     </div>
   );
 }

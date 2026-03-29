@@ -3,7 +3,11 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-export default function MarketPulseVisual() {
+type MarketPulseVisualProps = {
+  className?: string;
+};
+
+export default function MarketPulseVisual({ className }: MarketPulseVisualProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,7 +32,17 @@ export default function MarketPulseVisual() {
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    const canvas = renderer.domElement;
+    Object.assign(canvas.style, {
+      position: "absolute",
+      left: "0",
+      top: "0",
+      width: "100%",
+      height: "100%",
+      zIndex: "0",
+      display: "block",
+    });
+    container.appendChild(canvas);
 
     // 3. Konfiguracija valova
     const segmentCount = 200;
@@ -112,19 +126,24 @@ export default function MarketPulseVisual() {
       });
       
       renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      if (container.contains(canvas)) {
+        container.removeChild(canvas);
       }
     };
   }, []);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="relative w-full h-48 bg-[#020617] overflow-hidden rounded-xl border border-white/20 shadow-inner"
+    <div
+      ref={containerRef}
+      className={[
+        "relative isolate w-full min-h-[12rem] h-48 overflow-hidden rounded-xl border border-white/20 bg-[#020617]",
+        className ?? "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       {/* Grid Overlay - pojačan kontrast */}
-      <div className="absolute inset-0 pointer-events-none opacity-20"
+      <div className="pointer-events-none absolute inset-0 z-[1] opacity-20"
         style={{
           backgroundImage: `
             linear-gradient(to right, #ffffff 1px, transparent 1px),
@@ -155,10 +174,10 @@ export default function MarketPulseVisual() {
       </div>
 
       {/* CRT efekt skeniranja */}
-      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(255,255,255,0.05)_50%)] bg-[length:100%_4px] opacity-30"></div>
-      
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(255,255,255,0.05)_50%)] bg-[length:100%_4px] opacity-30"></div>
+
       {/* Vinjeta za fokus na sredinu */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#020617_100%)] pointer-events-none"></div>
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(circle_at_center,transparent_20%,#020617_100%)]"></div>
     </div>
   );
 }
