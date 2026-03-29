@@ -1,0 +1,118 @@
+{
+  "nav": {
+    "expertise": "Leistungen",
+    "about": "Warum wir",
+    "work": "Referenzen",
+    "contact": "Kontakt",
+    "liveDemo": "Live Tech Demo"
+  },
+  "headerCta": "Projekt anfragen",
+  "hero": {
+    "kicker": "Kresic Digital Systems",
+    "title": "Optimieren und automatisieren Sie Ihr Unternehmen mit smarten digitalen Lösungen",
+    "sub": "Von der Website-Wartung und Code-Reparatur bis hin zur KI-Integration und vollständigen Prozessautomatisierung. Konzentrieren Sie sich auf Ihr Wachstum – wir übernehmen die Technik.",
+    "ctaPrimary": "Kontakt aufnehmen",
+    "ctaSecondary": "Leistungen ansehen"
+  },
+  "services": {
+    "eyebrow": "Vier Säulen",
+    "title": "Digital, automatisiert, messbar",
+    "body": "Wir verbinden KI, stabile Webtechnik und pragmatische Business-Automatisierung—damit Sie Zeit sparen, Fehler reduzieren und schneller skalieren.",
+    "cards": [
+      {
+        "title": "Smarte KI-Integrationen & Website-Optimierung",
+        "description": "Anbindung von KI-Tools und Chatbots zur Automatisierung von Support und Vertrieb. Implementierung smarter Buchungssysteme und interaktiver Formulare."
+      },
+      {
+        "title": "Website-Wartung & Technischer Support",
+        "description": "Bug Fixing und Code-Analyse für einen reibungslosen Betrieb. Regelmäßige Updates zur Sicherung von Geschwindigkeit, Stabilität und Sicherheit."
+      },
+      {
+        "title": "Business-Automatisierung & Datenmanagement",
+        "description": "Fortgeschrittene Excel-Lösungen, Makros und API-Integrationen. Automatisierung von Finanzberichten und Synchronisation Ihrer Business-Apps."
+      },
+      {
+        "title": "Maßgeschneiderte Software- & Analyse-Tools",
+        "description": "Entwicklung spezifischer Skripte und Indikatoren für die Marktanalyse (TradingView/PineScript). Datenbasierte Backtesting-Tools zur Strategieprüfung."
+      }
+    ]
+  },
+  "about": {
+    "eyebrow": "Unser Ansatz",
+    "title": "Warum wir?",
+    "body": "Durch den Einsatz modernster KI-gestützter Entwicklungssysteme lösen wir komplexe technische Probleme schneller und präziser als traditionelle Methoden. Wir liefern zuverlässige Lösungen in Rekordzeit.",
+    "altText": "Porträt von Danijel Kresic, Gründer von Kresic Digital Systems",
+    "figcaptionSub": "KI-gestützte Entwicklung · messbare Ergebnisse",
+    "pills": [
+      "KI & Automatisierung",
+      "Next.js & TypeScript",
+      "Excel & Makros",
+      "API-Integration",
+      "TradingView / Pine Script",
+      "Datenpipelines",
+      "Website-Wartung"
+    ]
+  },
+  "projects": {
+    "title": "Referenzen & Werkzeuge",
+    "intro": "Ausgewählte Beispiele aus Wartung, Automatisierung und Analyse—von stabilen Web-Stacks bis zu datengetriebenen Hilfsmitteln.",
+    "tagline": "Wartung · Automatisierung · Analyse-Tools",
+    "caseStudy": "Fallstudie",
+    "detailsSoon": "Details folgen",
+    "legalNote": "Wichtiger Hinweis: Unsere Finanzlösungen dienen ausschließlich Analyse- und Informationszwecken. Wir entwickeln keine Systeme für die automatische Handelsausführung (Trading Bots).",
+    "demoIntro": "Interaktives Mock-Terminal: Korrelations-Heatmap und Scanner-Oberfläche—nur deterministische Demo-Daten.",
+    "featured": [
+      {
+        "role": "Operations & Reporting",
+        "name": "Automatisierte Finanz- und Bestandsübersichten",
+        "summary": "Zentrale Kennzahlen, Echtzeit-Bestände und automatisierte Reports—für Teams, die weniger manuelle Excel-Arbeit und mehr Klarheit im Tagesgeschäft brauchen."
+      },
+      {
+        "role": "Web & Commerce",
+        "name": "Skalierbare Shop- und Portalarchitektur",
+        "summary": "Schnelle Next.js-Oberflächen, saubere API-Anbindungen und zuverlässiger Zahlungsfluss—von Integration bis Go-live mit Fokus auf Stabilität."
+      },
+      {
+        "role": "Analyse & Research",
+        "name": "Datengetriebene Markt- und Strategie-Tools",
+        "summary": "Indikatoren, Skripte und Backtesting-Setups zur Einordnung von Märkten—als Entscheidungshilfe, nicht als automatisierte Handelsausführung."
+      }
+    ]
+  },
+  "opSec": {
+    "title": "Sicherheit, Daten & Vertraulichkeit",
+    "intro": "Klare Regeln für sensible Daten, Mandantenkommunikation und saubere Trennung von Produktions- und Testumgebungen.",
+    "items": [
+      {
+        "title": "Kontrollierte Arbeitsumgebungen",
+        "body": "Sensible Skripte, Reports und Zugangsdaten werden in abgegrenzten Umgebungen bearbeitet—minimierte Streuung und nachvollziehbare Prozesse."
+      },
+      {
+        "title": "Verschlüsselte Kommunikation",
+        "body": "Projektabstimmung und Dokumentenaustausch über Proton Mail und vergleichbare Kanäle—Ende-zu-Ende-Verschlüsselung als Standard."
+      },
+      {
+        "title": "Vertraulichkeit & NDA",
+        "body": "Strikte Vertraulichkeit für jedes Mandat—vereinbart, dokumentiert und mit klaren Zuständigkeiten."
+      }
+    ]
+  },
+  "legalFooter": {
+    "impressum": "Impressum",
+    "privacy": "Datenschutz"
+  },
+  "form": {
+    "name": "Name",
+    "email": "E-Mail",
+    "message": "Projektdetails",
+    "consent": "Ich willige ein, dass meine Angaben aus dem Kontaktformular zur Bearbeitung meiner Anfrage erhoben und verarbeitet werden. (Übermittlung über verschlüsselte Kanäle.)",
+    "submit": "Nachricht senden",
+    "sending": "Wird gesendet…",
+    "success": "Vielen Dank—Ihre Nachricht wurde gesendet. Wir melden uns bald."
+  },
+  "contact": {
+    "title": "Kontaktieren Sie mich für Ihr nächstes Projekt.",
+    "body": "Skizzieren Sie kurz Ziel, Zeitrahmen und Rahmenbedingungen. Sie erhalten in der Regel innerhalb eines Werktags eine Rückmeldung.",
+    "writtenContactLead": "Schriftlicher Kontakt bevorzugt. E-Mail:"
+  }
+}

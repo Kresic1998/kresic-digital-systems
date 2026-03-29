@@ -1,0 +1,118 @@
+{
+  "nav": {
+    "expertise": "Services",
+    "about": "Why us",
+    "work": "Work",
+    "contact": "Contact",
+    "liveDemo": "Live Tech Demo"
+  },
+  "headerCta": "Request a project",
+  "hero": {
+    "kicker": "Kresic Digital Systems",
+    "title": "Optimize and automate your business with smart digital solutions",
+    "sub": "From website maintenance and code fixes to AI integration and full process automation. Focus on your growth—we handle the technology.",
+    "ctaPrimary": "Get in touch",
+    "ctaSecondary": "View services"
+  },
+  "services": {
+    "eyebrow": "Four pillars",
+    "title": "Digital, automated, measurable",
+    "body": "We combine AI, reliable web engineering, and pragmatic business automation—so you save time, reduce errors, and scale faster.",
+    "cards": [
+      {
+        "title": "Smart AI integrations & website optimization",
+        "description": "Connecting AI tools and chatbots to automate support and sales. Implementation of smart booking systems and interactive forms."
+      },
+      {
+        "title": "Website maintenance & technical support",
+        "description": "Bug fixing and code analysis for smooth operations. Regular updates to protect speed, stability, and security."
+      },
+      {
+        "title": "Business automation & data management",
+        "description": "Advanced Excel solutions, macros, and API integrations. Automation of financial reports and synchronization of your business apps."
+      },
+      {
+        "title": "Tailored software & analytics tools",
+        "description": "Development of specific scripts and indicators for market analysis (TradingView/Pine Script). Data-driven backtesting tools for strategy validation."
+      }
+    ]
+  },
+  "about": {
+    "eyebrow": "Our approach",
+    "title": "Why us?",
+    "body": "By deploying state-of-the-art AI-assisted development systems, we solve complex technical problems faster and more precisely than traditional methods. We deliver reliable solutions in record time.",
+    "altText": "Danijel Kresic, founder of Kresic Digital Systems",
+    "figcaptionSub": "AI-assisted delivery · measurable outcomes",
+    "pills": [
+      "AI & automation",
+      "Next.js & TypeScript",
+      "Excel & macros",
+      "API integration",
+      "TradingView / Pine Script",
+      "Data pipelines",
+      "Website maintenance"
+    ]
+  },
+  "projects": {
+    "title": "Featured work & tools",
+    "intro": "Selected examples across maintenance, automation, and analytics—from stable web stacks to data-driven tooling.",
+    "tagline": "Maintenance · automation · analytics tools",
+    "caseStudy": "Case study",
+    "detailsSoon": "Details soon",
+    "legalNote": "Important notice: Our financial solutions are for analysis and information purposes only. We do not build systems for automated trade execution (trading bots).",
+    "demoIntro": "Interactive mock terminal: correlation heatmap and scanner UI—deterministic demo data only.",
+    "featured": [
+      {
+        "role": "Operations & reporting",
+        "name": "Automated financial & inventory dashboards",
+        "summary": "Centralized metrics, near real-time stock visibility, and automated reporting—for teams that need less manual spreadsheet work and more operational clarity."
+      },
+      {
+        "role": "Web & commerce",
+        "name": "Scalable storefront & portal architecture",
+        "summary": "Fast Next.js front ends, clean API integrations, and dependable payment flows—from integration through launch with stability as the default."
+      },
+      {
+        "role": "Analytics & research",
+        "name": "Data-driven market & strategy tooling",
+        "summary": "Indicators, scripts, and backtesting setups to interpret markets—as decision support, not automated order execution."
+      }
+    ]
+  },
+  "opSec": {
+    "title": "Security, data & confidentiality",
+    "intro": "Clear policies for sensitive data, client communication, and clean separation of production and test environments.",
+    "items": [
+      {
+        "title": "Controlled work environments",
+        "body": "Sensitive scripts, reports, and credentials are handled in bounded environments—minimal sprawl and traceable workflows."
+      },
+      {
+        "title": "Encrypted communication",
+        "body": "Project coordination and document exchange via Proton Mail and equivalent channels—end-to-end encryption by default."
+      },
+      {
+        "title": "Confidentiality & NDAs",
+        "body": "Strict confidentiality for every engagement—agreed in writing, documented, and owned end to end."
+      }
+    ]
+  },
+  "legalFooter": {
+    "impressum": "Impressum",
+    "privacy": "Datenschutz"
+  },
+  "form": {
+    "name": "Name",
+    "email": "Email",
+    "message": "Project details",
+    "consent": "I agree that my details from the contact form will be collected and processed to answer my request. (Data is handled securely via encrypted channels).",
+    "submit": "Send message",
+    "sending": "Sending…",
+    "success": "Thank you—your message was sent. We’ll get back to you soon."
+  },
+  "contact": {
+    "title": "Get in touch for your next project.",
+    "body": "Share a concise outline of goals, timeline, and constraints. You will typically hear back within one business day.",
+    "writtenContactLead": "Written contact preferred. Email:"
+  }
+}
