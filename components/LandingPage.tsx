@@ -7,7 +7,9 @@ import Link from "next/link";
 import { ContactFormWithConsent } from "@/components/ContactFormWithConsent";
 import DataFlowVisual from "@/components/DataFlowVisual";
 import { FadeIn } from "@/components/FadeIn";
+import HeroVisual from "@/components/HeroVisual";
 import InfrastructureGrid from "@/components/InfrastructureGrid";
+import { KdsMonogramLogo } from "@/components/KdsMonogramLogo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import MarketPulseVisual from "@/components/MarketPulseVisual";
 import {
@@ -185,9 +187,10 @@ function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
         <Link
           href="#hero"
-          className="inline-flex min-h-11 max-w-[min(100%,14rem)] items-center rounded-md text-sm font-semibold leading-tight tracking-tight text-zinc-900 [-webkit-tap-highlight-color:transparent] dark:text-white sm:max-w-xs"
+          className="inline-flex min-h-11 max-w-[min(100%,18rem)] items-center gap-2.5 rounded-md text-sm font-semibold leading-tight tracking-tight text-zinc-900 [-webkit-tap-highlight-color:transparent] dark:text-white sm:max-w-none sm:gap-3"
         >
-          {BRAND_NAME}
+          <KdsMonogramLogo variant="header" />
+          <span className="min-w-0">{BRAND_NAME}</span>
         </Link>
         <nav
           className="hidden items-center gap-8 text-sm font-medium text-zinc-600 dark:text-slate-400 md:flex"
@@ -224,17 +227,18 @@ function HeroSection() {
   return (
     <section
       id="hero"
-      className="scroll-mt-24 relative overflow-hidden border-b border-zinc-200/80 pt-24 pb-20 dark:border-white/[0.06] sm:pt-28 sm:pb-24 md:pt-32 md:pb-32 lg:pb-40"
+      className="scroll-mt-24 relative isolate min-h-[100dvh] overflow-hidden border-b border-zinc-200/80 bg-transparent pt-24 pb-20 dark:border-white/[0.06] sm:pt-28 sm:pb-24 md:pt-32 md:pb-32 lg:pb-40"
       aria-labelledby="hero-heading"
     >
+      <HeroVisual />
       <div
-        className="pointer-events-none absolute inset-0 -z-10 opacity-40 dark:opacity-100"
+        className="pointer-events-none absolute inset-0 z-[1] bg-transparent opacity-40 dark:opacity-100"
         aria-hidden
       >
         <div className="absolute -left-1/4 top-0 h-[480px] w-[480px] rounded-full bg-emerald-400/20 blur-3xl dark:bg-emerald-500/15" />
         <div className="absolute -right-1/4 bottom-0 h-[400px] w-[400px] rounded-full bg-violet-400/15 blur-3xl dark:bg-violet-500/10" />
       </div>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <FadeIn>
           <p className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-400">
             {h.kicker}
@@ -571,31 +575,34 @@ function SiteFooter() {
 
   return (
     <footer className="border-t border-zinc-200/80 py-10 dark:border-white/[0.06]">
-      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center sm:px-6 lg:px-8">
-        <p className="text-sm text-zinc-500 dark:text-slate-500">
-          © 2026 Danijel Kresic | Kresic Digital Systems
-        </p>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-medium">
-          <Link
-            href="/impressum"
-            className="text-sm font-medium text-slate-400 transition-colors hover:text-zinc-900 dark:hover:text-white"
-          >
-            {t.legalFooter.impressum}
-          </Link>
-          <Link
-            href="/datenschutz"
-            className="text-sm font-medium text-slate-400 transition-colors hover:text-zinc-900 dark:hover:text-white"
-          >
-            {t.legalFooter.privacy}
-          </Link>
-          <Link
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-zinc-600 transition-colors hover:text-zinc-900 dark:text-slate-400 dark:hover:text-white"
-          >
-            GitHub
-          </Link>
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 sm:px-6 lg:px-8">
+        <KdsMonogramLogo variant="footer" />
+        <div className="flex w-full flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+          <p className="text-sm text-zinc-500 dark:text-slate-500">
+            © 2026 Danijel Kresic | Kresic Digital Systems
+          </p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-medium">
+            <Link
+              href="/impressum"
+              className="text-sm font-medium text-slate-400 transition-colors hover:text-zinc-900 dark:hover:text-white"
+            >
+              {t.legalFooter.impressum}
+            </Link>
+            <Link
+              href="/datenschutz"
+              className="text-sm font-medium text-slate-400 transition-colors hover:text-zinc-900 dark:hover:text-white"
+            >
+              {t.legalFooter.privacy}
+            </Link>
+            <Link
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-zinc-600 transition-colors hover:text-zinc-900 dark:text-slate-400 dark:hover:text-white"
+            >
+              GitHub
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
