@@ -28,13 +28,10 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# IDE podešavanja (Cursor/VS Code)
+# IDE / editor (local-only; not shared via repo)
 .vscode/
 .idea/
-# Cursor: ignore local project data, but keep shared rules in git
-.cursor/*
-!.cursor/rules/
-!.cursor/rules/**
+.cursor/
 
 # Opciono: lokalni scratch fajlovi (sadržaj je u dictionaries/*.json)
 private-legal/*.html
