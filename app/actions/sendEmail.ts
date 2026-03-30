@@ -12,6 +12,18 @@ const MAX_NAME_LEN = 200;
 const MAX_EMAIL_LEN = 320;
 const MAX_MESSAGE_LEN = 8000;
 
+const BASIC_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Vercel/UI pastes sometimes wrap values in quotes; strip so Resend accepts `from`. */
+function trimEnvValue(value: string | undefined): string {
+  if (typeof value !== "string") return "";
+  let t = value.trim();
+  if (t.length >= 2 && ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'")))) {
+    t = t.slice(1, -1).trim();
+  }
+  return t;
+}
+
 function escapeHtml(text: string): string {
   return text
     .replace(/&/g, "&amp;")
@@ -72,8 +84,7 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
   const t = messages(locale);
 
   // RESEND_API_KEY must be trimmed — Vercel dashboard pastes often include trailing whitespace
-  const rawKey = process.env.RESEND_API_KEY;
-  const apiKey = typeof rawKey === "string" ? rawKey.trim() : "";
+  const apiKey = trimEnvValue(process.env.RESEND_API_KEY);
 
   // Development-only diagnostics — never runs in production
   if (isDev) {
@@ -114,8 +125,7 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
   }
 
   // Strict email format validation
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailPattern.test(email)) {
+  if (!BASIC_EMAIL.test(email)) {
     return { success: false, error: t.invalidEmail };
   }
 
@@ -138,12 +148,16 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
     return { success: false, error: t.senderNotConfigured };
   }
 
+  const toOverride = trimEnvValue(process.env.RESEND_TO_EMAIL);
+  const to =
+    toOverride.length > 0 && BASIC_EMAIL.test(toOverride) ? toOverride : SITE_EMAIL;
+
   const resend = new Resend(apiKey);
 
   try {
     const { error } = await resend.emails.send({
       from,
-      to: [SITE_EMAIL],
+      to: [to],
       replyTo: email,
       subject: `New Lead: ${name} from Kresic Digital Systems`,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,

@@ -100,7 +100,8 @@ This is not a generic template; structure and copy reflect how the business is p
 |----------|----------|------|
 | `NEXT_PUBLIC_SITE_URL` | Recommended | `metadataBase` / canonical defaults (falls back to production URL in code if unset). |
 | `RESEND_API_KEY` | Yes (prod) | Send contact emails via Resend. |
-| `RESEND_FROM_EMAIL` | Yes (prod) | Verified sender, e.g. `Name <noreply@yourdomain.com>`. In **development** only, a Resend onboarding sender may be used as fallback; production requires this to be set. |
+| `RESEND_FROM_EMAIL` | Yes (prod) | Verified sender, e.g. `Name <noreply@yourdomain.com>` or plain `you@verified-domain.com`. |
+| `RESEND_TO_EMAIL` | No | Override contact-form **recipient**; default is `SITE_EMAIL` in `lib/site.ts`. |
 
 Copy `.env.example` → `.env.local` and fill values. Never commit `.env.local`.
 
