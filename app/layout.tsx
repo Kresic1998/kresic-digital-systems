@@ -50,10 +50,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#020617" },
-  ],
+  themeColor: "#070b14",
 };
 
 export default function RootLayout({
@@ -64,10 +61,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} scroll-smooth`}
+      className={`${inter.variable} scroll-smooth dark`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen overflow-x-hidden bg-zinc-50 font-sans text-zinc-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+      <body className="min-h-screen overflow-x-hidden bg-terminal-bg font-sans text-slate-100 antialiased">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-emerald-600 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"

@@ -7,20 +7,3 @@
     @apply bg-emerald-500/30 text-white;
   }
 }
-
-/* KDS monogram — neural linije */
-@keyframes kds-neural-flow {
-  from {
-    stroke-dashoffset: 100;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@layer utilities {
-  .kds-neural-line {
-    stroke-dasharray: 4;
-    animation: kds-neural-flow 10s linear infinite;
-  }
-}

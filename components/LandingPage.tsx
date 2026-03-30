@@ -9,7 +9,7 @@ import DataFlowVisual from "@/components/DataFlowVisual";
 import { FadeIn } from "@/components/FadeIn";
 import HeroVisual from "@/components/HeroVisual";
 import InfrastructureGrid from "@/components/InfrastructureGrid";
-import { KdsMonogramLogo } from "@/components/KdsMonogramLogo";
+import { KDSLogo } from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import MarketPulseVisual from "@/components/MarketPulseVisual";
 import {
@@ -183,24 +183,24 @@ function SiteHeader() {
   ];
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-zinc-200/80 bg-zinc-50/80 backdrop-blur-xl dark:border-white/[0.06] dark:bg-slate-950/75">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-terminal-bg/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
         <Link
           href="#hero"
-          className="inline-flex min-h-11 max-w-[min(100%,18rem)] items-center gap-2.5 rounded-md text-sm font-semibold leading-tight tracking-tight text-zinc-900 [-webkit-tap-highlight-color:transparent] dark:text-white sm:max-w-none sm:gap-3"
+          className="inline-flex min-h-11 max-w-[min(100%,18rem)] items-center gap-2.5 rounded-md text-sm font-semibold leading-tight tracking-tight text-white [-webkit-tap-highlight-color:transparent] sm:max-w-none sm:gap-3"
         >
-          <KdsMonogramLogo variant="header" />
+          <KDSLogo className="h-8 w-auto shrink-0 text-white sm:h-9" />
           <span className="min-w-0">{BRAND_NAME}</span>
         </Link>
         <nav
-          className="hidden items-center gap-8 text-sm font-medium text-zinc-600 dark:text-slate-400 md:flex"
+          className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex"
           aria-label="Primary"
         >
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-zinc-900 dark:hover:text-white"
+              className="transition-colors hover:text-white"
             >
               {item.label}
             </Link>
@@ -210,7 +210,7 @@ function SiteHeader() {
           <LanguageSwitcher />
           <Link
             href="#contact"
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-zinc-900 px-4 text-xs font-semibold text-white shadow-sm transition hover:bg-zinc-800 [-webkit-tap-highlight-color:transparent] dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 sm:px-5 sm:text-sm"
+            className="inline-flex min-h-11 items-center justify-center rounded-full bg-emerald-500 px-4 text-xs font-semibold text-white shadow-sm shadow-emerald-950/30 transition hover:bg-emerald-400 [-webkit-tap-highlight-color:transparent] sm:px-5 sm:text-sm"
           >
             {t.headerCta}
           </Link>
@@ -225,45 +225,51 @@ function HeroSection() {
   const h = t.hero;
 
   return (
+    <div className="relative z-[1] shadow-[0_32px_72px_-10px_rgba(0,0,0,0.55),0_16px_40px_-16px_rgba(0,0,0,0.35)]">
     <section
       id="hero"
-      className="scroll-mt-24 relative isolate min-h-[100dvh] overflow-hidden border-b border-zinc-200/80 bg-transparent pt-24 pb-20 dark:border-white/[0.06] sm:pt-28 sm:pb-24 md:pt-32 md:pb-32 lg:pb-40"
+      className="scroll-mt-24 relative isolate min-h-[100dvh] overflow-x-hidden bg-transparent pb-20 pt-24 sm:pb-24 sm:pt-28 md:pb-32 md:pt-32 lg:pb-40"
       aria-labelledby="hero-heading"
     >
       <HeroVisual />
       <div
-        className="pointer-events-none absolute inset-0 z-[1] bg-transparent opacity-40 dark:opacity-100"
+        className="pointer-events-none absolute inset-0 z-[1] bg-transparent opacity-100"
         aria-hidden
       >
-        <div className="absolute -left-1/4 top-0 h-[480px] w-[480px] rounded-full bg-emerald-400/20 blur-3xl dark:bg-emerald-500/15" />
-        <div className="absolute -right-1/4 bottom-0 h-[400px] w-[400px] rounded-full bg-violet-400/15 blur-3xl dark:bg-violet-500/10" />
+        <div className="absolute -left-1/4 top-0 h-[480px] w-[480px] rounded-full bg-emerald-500/12 blur-3xl" />
+        <div className="absolute -right-1/4 bottom-0 h-[400px] w-[400px] rounded-full bg-violet-500/10 blur-3xl" />
       </div>
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      {/* Meki prelaz u donju sekciju — senka + ton u terminal-bg */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[8] h-40 bg-gradient-to-b from-transparent via-black/35 to-terminal-bg sm:h-48"
+        aria-hidden
+      />
+      <div className="relative z-10 mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
         <FadeIn>
-          <p className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-400">
+          <p className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">
             {h.kicker}
           </p>
           <h1
             id="hero-heading"
-            className="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.08]"
+            className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.08]"
           >
-            <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
               {h.title}
             </span>
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600 dark:text-slate-400 sm:text-xl">
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400 sm:text-xl">
             {h.sub}
           </p>
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="mx-auto mt-16 flex w-full max-w-sm flex-col items-stretch gap-4 sm:mt-20 md:mt-28">
             <Link
               href="#contact"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-zinc-900 px-8 text-sm font-semibold text-white shadow-lg shadow-zinc-900/20 transition hover:bg-zinc-800 dark:bg-white dark:text-slate-950 dark:shadow-none dark:hover:bg-slate-200"
+              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-white px-8 text-sm font-semibold text-slate-950 shadow-lg transition hover:bg-slate-200"
             >
               {h.ctaPrimary}
             </Link>
             <Link
               href="#expertise"
-              className="inline-flex h-12 items-center justify-center rounded-full border border-zinc-300 bg-white/50 px-8 text-sm font-semibold text-zinc-800 backdrop-blur-sm transition hover:border-zinc-400 hover:bg-white dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-white/20 dark:hover:bg-white/[0.06]"
+              className="inline-flex h-12 w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.06] px-8 text-sm font-semibold text-slate-200 backdrop-blur-sm transition hover:border-white/25 hover:bg-white/[0.1]"
             >
               {h.ctaSecondary}
             </Link>
@@ -271,6 +277,7 @@ function HeroSection() {
         </FadeIn>
       </div>
     </section>
+    </div>
   );
 }
 
@@ -281,7 +288,7 @@ function ServicesSection() {
   return (
     <section
       id="expertise"
-      className="scroll-mt-24 border-y border-zinc-800/80 bg-slate-950 py-20 md:py-28"
+      className="scroll-mt-24 border-b border-white/[0.06] bg-terminal-bg py-20 md:py-28"
       aria-labelledby="services-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -336,7 +343,7 @@ function AboutSection() {
   return (
     <section
       id="about"
-      className="scroll-mt-24 border-b border-zinc-800/80 bg-slate-950 py-20 md:py-28"
+      className="scroll-mt-24 border-b border-white/[0.08] bg-terminal-bg py-20 md:py-28"
       aria-labelledby="about-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -396,7 +403,7 @@ function ProjectsSection() {
   return (
     <section
       id="work"
-      className="scroll-mt-24 border-b border-zinc-200/80 py-20 dark:border-white/[0.06] md:py-28"
+      className="scroll-mt-24 border-b border-white/[0.08] bg-terminal-bg py-20 md:py-28"
       aria-labelledby="work-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -405,27 +412,27 @@ function ProjectsSection() {
             <div className="max-w-2xl">
               <h2
                 id="work-heading"
-                className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white sm:text-4xl"
+                className="text-3xl font-semibold tracking-tight text-white sm:text-4xl"
               >
                 {p.title}
               </h2>
-              <p className="mt-4 text-lg leading-relaxed text-zinc-600 dark:text-slate-400">
+              <p className="mt-4 text-lg leading-relaxed text-slate-400">
                 {p.intro}
               </p>
               <Link
                 href="/demo/market-analytics"
-                className="mt-5 inline-flex w-fit items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-900/25 transition hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-900/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 dark:bg-emerald-500 dark:shadow-emerald-950/50 dark:hover:bg-emerald-400 dark:hover:shadow-emerald-950/60"
+                className="mt-5 inline-flex w-fit items-center justify-center gap-2 rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-950/40 transition hover:-translate-y-0.5 hover:bg-emerald-400 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
               >
                 {t.nav.liveDemo}
                 <span aria-hidden className="text-base leading-none">
                   →
                 </span>
               </Link>
-              <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-500 dark:text-slate-500">
+              <p className="mt-2 max-w-xl text-xs leading-relaxed text-slate-500">
                 {p.demoIntro}
               </p>
             </div>
-            <p className="text-sm font-medium text-zinc-500 dark:text-slate-500">
+            <p className="text-sm font-medium text-slate-500">
               {p.tagline}
             </p>
           </div>
@@ -435,32 +442,32 @@ function ProjectsSection() {
             const HeaderVisual = projectHeaderVisuals[index] ?? projectHeaderVisuals[0];
             return (
               <FadeIn key={project.name} delay={index * 0.12} className="min-h-0">
-                <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-sm transition duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:border-zinc-300 hover:shadow-xl dark:border-white/[0.06] dark:bg-slate-900/40 dark:shadow-none dark:hover:border-white/[0.14] dark:hover:shadow-2xl dark:hover:shadow-black/50">
-                  <div className="relative isolate w-full shrink-0 overflow-hidden bg-zinc-950 dark:bg-black">
+                <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/35 shadow-none transition duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:border-white/20 hover:bg-slate-900/50 hover:shadow-2xl hover:shadow-black/50">
+                  <div className="relative isolate w-full shrink-0 overflow-hidden bg-black/40">
                     <HeaderVisual className="w-full rounded-none border-0 shadow-none ring-0" />
                     <div
-                      className="pointer-events-none absolute inset-x-0 bottom-0 z-[6] h-px bg-gradient-to-r from-transparent via-zinc-400/35 to-transparent dark:via-white/12"
+                      className="pointer-events-none absolute inset-x-0 bottom-0 z-[6] h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"
                       aria-hidden
                     />
                   </div>
-                  <div className="relative flex flex-1 flex-col border-t border-zinc-200/80 bg-gradient-to-b from-zinc-100/70 to-white p-6 dark:border-white/[0.07] dark:from-slate-950 dark:to-slate-900/40">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                  <div className="relative flex flex-1 flex-col border-t border-white/[0.08] bg-gradient-to-b from-slate-900/70 to-slate-900/35 p-6">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
                       {project.role}
                     </p>
-                    <h3 className="mt-2 text-lg font-semibold text-zinc-900 dark:text-white">
+                    <h3 className="mt-2 text-lg font-semibold text-white">
                       {project.name}
                     </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-slate-400">
+                    <p className="mt-3 text-sm leading-relaxed text-slate-400">
                       {project.summary}
                     </p>
-                    <p className="mt-4 text-sm font-medium leading-relaxed text-zinc-800 dark:text-slate-200">
+                    <p className="mt-4 text-sm font-medium leading-relaxed text-slate-200">
                       {project.outcome}
                     </p>
                     <div className="mt-5 flex flex-wrap gap-2">
                       {project.tags.map((tag) => (
                         <span
                           key={`${project.name}-${tag}`}
-                          className="rounded-md border border-zinc-200/80 bg-zinc-100/90 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-zinc-700 dark:border-white/10 dark:bg-terminal-800/50 dark:text-slate-300"
+                          className="rounded-md border border-white/10 bg-terminal-800/50 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-slate-300"
                         >
                           {tag}
                         </span>
@@ -473,7 +480,7 @@ function ProjectsSection() {
           })}
         </div>
         <FadeIn delay={0.2} className="mt-10 lg:mt-12">
-          <p className="max-w-4xl text-xs leading-relaxed text-zinc-500 dark:text-slate-500">
+          <p className="max-w-4xl text-xs leading-relaxed text-slate-500">
             {p.legalNote}
           </p>
         </FadeIn>
@@ -488,7 +495,7 @@ function ContactOpSecTrustModule() {
 
   return (
     <aside
-      className="rounded-2xl border border-white/10 bg-zinc-950 p-6 sm:p-8 lg:p-10"
+      className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 sm:p-8 lg:p-10"
       aria-labelledby="opsec-trust-heading"
     >
       <h3
@@ -526,7 +533,7 @@ function ContactSection() {
   return (
     <section
       id="contact"
-      className="scroll-mt-24 py-20 md:py-28"
+      className="scroll-mt-24 bg-terminal-bg py-20 md:py-28"
       aria-labelledby="contact-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -534,19 +541,19 @@ function ContactSection() {
           <FadeIn>
             <h2
               id="contact-heading"
-              className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white sm:text-4xl"
+              className="text-3xl font-semibold tracking-tight text-white sm:text-4xl"
             >
               {t.contact.title}
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-zinc-600 dark:text-slate-400">
+            <p className="mt-4 text-lg leading-relaxed text-slate-400">
               {t.contact.body}
             </p>
-            <p className="mt-6 text-sm font-medium text-zinc-600 dark:text-slate-400">
+            <p className="mt-6 text-sm font-medium text-slate-400">
               {t.contact.writtenContactLead}
             </p>
             <a
               href={SITE_MAILTO}
-              className="mt-2 inline-flex max-w-full items-center gap-2 break-all text-sm font-medium text-zinc-700 underline-offset-4 transition hover:underline dark:text-slate-400 dark:hover:text-slate-300"
+              className="mt-2 inline-flex max-w-full items-center gap-2 break-all text-sm font-medium text-slate-300 underline-offset-4 transition hover:text-white hover:underline"
             >
               {SITE_EMAIL}
               <span aria-hidden className="shrink-0">
@@ -555,7 +562,7 @@ function ContactSection() {
             </a>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <div className="rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-sm dark:border-white/[0.06] dark:bg-slate-900/40 dark:shadow-none sm:p-8">
+            <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-none sm:p-8">
               <ContactFormWithConsent labels={t.form} locale={locale} />
             </div>
           </FadeIn>
@@ -574,23 +581,23 @@ function SiteFooter() {
   const { t } = useI18n();
 
   return (
-    <footer className="border-t border-zinc-200/80 py-10 dark:border-white/[0.06]">
+    <footer className="border-t border-white/[0.08] bg-terminal-bg py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 sm:px-6 lg:px-8">
-        <KdsMonogramLogo variant="footer" />
+        <KDSLogo className="h-14 w-auto text-slate-300 md:h-16" />
         <div className="flex w-full flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-          <p className="text-sm text-zinc-500 dark:text-slate-500">
+          <p className="text-sm text-slate-500">
             © 2026 Danijel Kresic | Kresic Digital Systems
           </p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-medium">
             <Link
               href="/impressum"
-              className="text-sm font-medium text-slate-400 transition-colors hover:text-zinc-900 dark:hover:text-white"
+              className="text-sm font-medium text-slate-400 transition-colors hover:text-white"
             >
               {t.legalFooter.impressum}
             </Link>
             <Link
               href="/datenschutz"
-              className="text-sm font-medium text-slate-400 transition-colors hover:text-zinc-900 dark:hover:text-white"
+              className="text-sm font-medium text-slate-400 transition-colors hover:text-white"
             >
               {t.legalFooter.privacy}
             </Link>
@@ -598,7 +605,7 @@ function SiteFooter() {
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-600 transition-colors hover:text-zinc-900 dark:text-slate-400 dark:hover:text-white"
+              className="text-slate-400 transition-colors hover:text-white"
             >
               GitHub
             </Link>
@@ -613,7 +620,10 @@ export function LandingPage() {
   return (
     <>
       <SiteHeader />
-      <main id="main" className="min-w-0 overflow-x-hidden">
+      <main
+        id="main"
+        className="relative z-[1] min-w-0 overflow-x-hidden bg-terminal-bg"
+      >
         <HeroSection />
         <ServicesSection />
         <AboutSection />

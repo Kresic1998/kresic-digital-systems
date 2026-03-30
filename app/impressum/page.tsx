@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function ImpressumPage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-terminal-bg text-slate-100">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
           Rechtliche Angaben

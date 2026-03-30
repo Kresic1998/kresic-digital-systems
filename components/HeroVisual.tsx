@@ -15,21 +15,24 @@ export default function App() {
 
     const container = containerRef.current;
     const scene = new THREE.Scene();
-    
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      2000
-    );
+
+    const getSize = () => {
+      const w = container.clientWidth;
+      const h = Math.max(container.clientHeight, 1);
+      return { w, h };
+    };
+
+    const { w: iw, h: ih } = getSize();
+    const camera = new THREE.PerspectiveCamera(75, iw / ih, 0.1, 2000);
     camera.position.z = 450;
 
-    const renderer = new THREE.WebGLRenderer({ 
-      antialias: true, 
-      alpha: true 
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
     });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(iw, ih);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.style.pointerEvents = "none";
     container.appendChild(renderer.domElement);
 
     // --- 1. Point Cloud (Sfera čestica) ---
@@ -105,8 +108,11 @@ export default function App() {
     let implodeFactor = 0;
 
     const onMouseMove = (e: MouseEvent) => {
-      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      const rect = container.getBoundingClientRect();
+      const w = rect.width || 1;
+      const h = rect.height || 1;
+      mouse.x = ((e.clientX - rect.left) / w) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / h) * 2 + 1;
       targetRotationY = mouse.x * 0.35;
       targetRotationX = -mouse.y * 0.35;
     };
@@ -118,12 +124,15 @@ export default function App() {
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('click', onClick);
 
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+    const applySize = () => {
+      const { w, h } = getSize();
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(w, h);
     };
-    window.addEventListener('resize', handleResize);
+
+    const resizeObserver = new ResizeObserver(() => applySize());
+    resizeObserver.observe(container);
 
     // --- 4. Animaciona petlja ---
     let animationFrameId: number;
@@ -194,9 +203,9 @@ export default function App() {
     animate();
 
     return () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('click', onClick);
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("click", onClick);
+      resizeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
       
       renderer.dispose();
@@ -214,11 +223,11 @@ export default function App() {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 z-0 min-h-[100dvh] w-full bg-[#030303] overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-0 min-h-full w-full bg-terminal-bg overflow-hidden"
     >
       {/* Centralni žig (Kresic Digital Systems) - Optimizovana vidljivost */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none px-6 text-center">
-        <h2 className="font-mono text-white/[0.20] text-[5vw] md:text-[3.5vw] tracking-[0.6em] uppercase whitespace-nowrap blur-[0.4px] drop-shadow-[0_0_20px_rgba(255,255,255,0.03)] transition-opacity duration-1000">
+        <h2 className="font-mono text-white/[0.32] text-[5vw] md:text-[3.5vw] tracking-[0.6em] uppercase whitespace-nowrap drop-shadow-[0_0_24px_rgba(255,255,255,0.06)] transition-opacity duration-1000">
           Kresic Digital Systems
         </h2>
       </div>

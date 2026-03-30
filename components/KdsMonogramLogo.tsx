@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import React, { type SVGProps } from "react";
 
 type KdsMonogramLogoProps = SVGProps<SVGSVGElement> & {
   /** Header: kompaktan; footer: veći sa blagim okvirom */
