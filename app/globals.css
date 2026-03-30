@@ -7,3 +7,60 @@
     @apply bg-emerald-500/30 text-white;
   }
 }
+
+/* eRecht24 API HTML — uklapa se u tamnu temu sajta */
+@layer components {
+  .erecht24-legal {
+    @apply text-sm leading-relaxed text-slate-300;
+  }
+
+  .erecht24-legal :where(h1, h2, h3, h4) {
+    @apply font-semibold tracking-tight text-white;
+  }
+
+  .erecht24-legal h1 {
+    @apply mt-8 text-2xl first:mt-0;
+  }
+
+  .erecht24-legal h2 {
+    @apply mt-8 border-b border-white/10 pb-2 text-base first:mt-0;
+  }
+
+  .erecht24-legal h3 {
+    @apply mt-6 text-sm;
+  }
+
+  .erecht24-legal p {
+    @apply mt-3 text-slate-400;
+  }
+
+  .erecht24-legal a {
+    @apply text-indigo-300 underline-offset-2 hover:underline;
+  }
+
+  .erecht24-legal ul,
+  .erecht24-legal ol {
+    @apply mt-3 list-inside space-y-2 text-slate-400;
+  }
+
+  .erecht24-legal ul {
+    @apply list-disc;
+  }
+
+  .erecht24-legal ol {
+    @apply list-decimal;
+  }
+
+  .erecht24-legal strong {
+    @apply font-semibold text-slate-200;
+  }
+
+  .erecht24-legal table {
+    @apply mt-4 w-full border-collapse text-left text-slate-400;
+  }
+
+  .erecht24-legal th,
+  .erecht24-legal td {
+    @apply border border-white/10 px-3 py-2 align-top;
+  }
+}

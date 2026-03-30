@@ -621,8 +621,6 @@ function ContactSection() {
 }
 
 function SiteFooter() {
-  const { t } = useI18n();
-
   return (
     <footer className="border-t border-white/[0.08] bg-terminal-bg py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 sm:px-6 lg:px-8">
@@ -632,18 +630,6 @@ function SiteFooter() {
             © 2026 Danijel Kresic | Kresic Digital Systems
           </p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-medium">
-            <Link
-              href="/impressum"
-              className="text-sm font-medium text-slate-400 transition-colors hover:text-white"
-            >
-              {t.legalFooter.impressum}
-            </Link>
-            <Link
-              href="/datenschutz"
-              className="text-sm font-medium text-slate-400 transition-colors hover:text-white"
-            >
-              {t.legalFooter.privacy}
-            </Link>
             <Link
               href={GITHUB_URL}
               target="_blank"
