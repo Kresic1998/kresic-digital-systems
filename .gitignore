@@ -31,4 +31,7 @@ Thumbs.db
 # IDE podešavanja (Cursor/VS Code)
 .vscode/
 .idea/
-.cursor/
+# Cursor: ignore local project data, but keep shared rules in git
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**

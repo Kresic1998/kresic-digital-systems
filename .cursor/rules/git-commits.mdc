@@ -1,0 +1,18 @@
+---
+description: Git commit messages must be written in English
+alwaysApply: true
+---
+
+# Git commit messages
+
+- **Language:** Write every commit message in **English** only (title and body). Do not use Serbian, German, or other languages in commits.
+- **Title:** Short, imperative mood (e.g. `fix contact form validation`, `docs: update README`).
+- **Body:** Use when needed for context; keep complete sentences and stay in English.
+
+```text
+✅ docs: refresh README for Next 14 stack
+✅ fix: show consent error in active locale
+
+❌ docs: ažuriran README
+❌ fix: poruka na nemačkom
+```
