@@ -1,18 +1,40 @@
 ---
-description: Git commit messages must be written in English
+description: English-only, senior-professional Git commit messages
 alwaysApply: true
 ---
 
 # Git commit messages
 
-- **Language:** Write every commit message in **English** only (title and body). Do not use Serbian, German, or other languages in commits.
-- **Title:** Short, imperative mood (e.g. `fix contact form validation`, `docs: update README`).
-- **Body:** Use when needed for context; keep complete sentences and stay in English.
+## Language
+
+- Write **only in English** (subject and body). No Serbian, German, or other languages in commits.
+
+## Senior / professional standard
+
+Treat commit history like **engineering documentation** for future you and reviewers.
+
+- **Subject (first line):** Imperative mood, present tense, as if completing “This commit will…”. **No trailing period.** Aim for **~50–72 characters**; be specific about *what* changed (component, area, or behavior), not vague (“fixes”, “updates”, “changes”).
+- **Type prefix (recommended):** Use Conventional Commits when it fits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `perf:`, `test:`, `ci:` — then a space and the description.
+- **Body (optional but use when useful):** Blank line after subject. Explain **why** the change was made, non-obvious tradeoffs, or what breaks / what to verify. Use **full sentences**, proper grammar, and **no filler** (“updated some files”). Bullet lists are fine for multiple distinct points.
+- **One logical change per commit** when practical; avoid mixing unrelated refactors with feature work in a single commit.
+- **Tone:** Direct, precise, calm — like a staff/senior engineer handoff. **No slang**, no emotional language, no ALL CAPS in the subject, no `WIP`, `tmp`, or `asdf`.
+
+## Examples
 
 ```text
-✅ docs: refresh README for Next 14 stack
-✅ fix: show consent error in active locale
+✅ fix: validate contact consent before server action
 
+Client-side check uses dictionary copy so errors match site locale.
+Server-side verification unchanged.
+
+✅ docs: align README stack table with package.json
+
+✅ refactor: size Three.js hero canvas to container bounds
+
+Uses ResizeObserver instead of window dimensions for correct aspect ratio.
+
+❌ fix stuff
+❌ WIP
+❌ updated things and fixed bugs
 ❌ docs: ažuriran README
-❌ fix: poruka na nemačkom
 ```
