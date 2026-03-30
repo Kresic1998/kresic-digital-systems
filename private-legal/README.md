@@ -1,27 +1,27 @@
-# Privatni pravni HTML
+# Pravni HTML (šabloni)
 
-Ovde **nalepiš** gotov HTML (npr. iz eRecht24 exporta). Fajlovi `*.html` **nisu u gitu** (vidi `.gitignore`).
+Ovde **menjaš** tekst u `*.html.example` fajlovima (lakše za paste iz editora).  
+**Šta je u produkciji:** sadržaj iz šablona mora da bude u **`dictionaries/de.json` i `en.json`** polje `htmlBody` unutar `datenschutz` / `impressum` — to ide u git i Vercel vidi isto.
 
-## Kako koristiš
+## Nakon izmene u `.example`
 
-1. Kopiraj šablon: u istom folderu napravi fajl **bez** `.example` u imenu:
+Iz korena projekta:
 
-   | Šablon (u gitu) | Tvoj fajl (lokalno, ne u gitu) |
-   |-----------------|--------------------------------|
-   | `datenschutz.de.html.example` | `datenschutz.de.html` |
-   | `datenschutz.en.html.example` | `datenschutz.en.html` |
-   | `impressum.de.html.example` | `impressum.de.html` |
-   | `impressum.en.html.example` | `impressum.en.html` |
+```bash
+npm run sync:legal
+```
 
-2. Otvori npr. `datenschutz.de.html` i zalepi HTML fragment (samo sadržaj unutar stranice — naslovi, paragrafi; stilovi: klasa `legal-html` se dodaje u kodu oko tvog HTML-a).
+Zatim commit `dictionaries/de.json` i `dictionaries/en.json`.
 
-3. Restartuj `npm run dev` ako ne vidiš promenu odmah.
+## Fajlovi
 
-## Ponašanje
+| Šablon (u gitu) |
+|-----------------|
+| `datenschutz.de.html.example` |
+| `datenschutz.en.html.example` |
+| `impressum.de.html.example` |
+| `impressum.en.html.example` |
 
-- Ako **postoji** neprazan `*.html` za trenutni jezik (DE/EN), stranica prikazuje **samo** taj HTML (+ header + link „nazad“).
-- Ako fajl **nema** ili je prazan, koristi se **ugrađeni tekst** iz `dictionaries/de.json` i `en.json`.
+## Ponašanje ako `htmlBody` u rečniku je prazan
 
-## Produkcija (Vercel)
-
-Fajlovi u `private-legal/` **ne idu** na GitHub, pa ih Vercel **ne vidi** pri deployu — u produkciji će biti fallback na rečnike, osim ako ručno dodaš iste fajlove u build (npr. drugačiji pipeline) ili držiš tekst u rečnicima.
+Stranica koristi ugrađeni tekst iz ostalih ključeva u `datenschutz` / `impressum` (stariji blok-paragrafi).

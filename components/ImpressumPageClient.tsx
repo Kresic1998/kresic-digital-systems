@@ -6,21 +6,13 @@ import { LegalPageHeader } from "@/components/LegalPageHeader";
 import { SITE_EMAIL } from "@/lib/site";
 import { useI18n } from "@/lib/i18n";
 
-type ImpressumPageClientProps = {
-  pastedHtmlDe: string | null;
-  pastedHtmlEn: string | null;
-};
-
-export function ImpressumPageClient({
-  pastedHtmlDe,
-  pastedHtmlEn,
-}: ImpressumPageClientProps) {
+export function ImpressumPageClient() {
   const { t, locale } = useI18n();
   const imp = t.impressum;
 
-  const pasted = locale === "de" ? pastedHtmlDe : pastedHtmlEn;
+  const html = imp.htmlBody.trim();
 
-  if (pasted) {
+  if (html) {
     return (
       <>
         <LegalPageHeader />
@@ -31,7 +23,7 @@ export function ImpressumPageClient({
           >
             <div
               className="legal-html mt-6"
-              dangerouslySetInnerHTML={{ __html: pasted }}
+              dangerouslySetInnerHTML={{ __html: html }}
             />
             <Link
               href="/#hero"

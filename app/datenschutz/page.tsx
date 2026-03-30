@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { DatenschutzPageClient } from "@/components/DatenschutzPageClient";
-import { readPrivateLegalHtml } from "@/lib/readPrivateLegalHtml";
 import { BRAND_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -9,16 +8,6 @@ export const metadata: Metadata = {
   description: `Datenschutzerklärung — ${BRAND_NAME}.`,
 };
 
-export default async function DatenschutzPage() {
-  const [pastedHtmlDe, pastedHtmlEn] = await Promise.all([
-    readPrivateLegalHtml("datenschutz", "de"),
-    readPrivateLegalHtml("datenschutz", "en"),
-  ]);
-
-  return (
-    <DatenschutzPageClient
-      pastedHtmlDe={pastedHtmlDe}
-      pastedHtmlEn={pastedHtmlEn}
-    />
-  );
+export default function DatenschutzPage() {
+  return <DatenschutzPageClient />;
 }

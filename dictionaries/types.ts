@@ -73,6 +73,7 @@ export type LandingDictionary = {
     writtenContactLead: string;
   };
   impressum: {
+    htmlBody: string;
     eyebrow: string;
     title: string;
     nameLine: string;
@@ -95,6 +96,7 @@ export type LandingDictionary = {
     backHome: string;
   };
   datenschutz: {
+    htmlBody: string;
     eyebrow: string;
     title: string;
     stand: string;

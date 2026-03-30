@@ -11,23 +11,15 @@ import {
 } from "@/lib/site";
 import { useI18n } from "@/lib/i18n";
 
-type DatenschutzPageClientProps = {
-  pastedHtmlDe: string | null;
-  pastedHtmlEn: string | null;
-};
-
-export function DatenschutzPageClient({
-  pastedHtmlDe,
-  pastedHtmlEn,
-}: DatenschutzPageClientProps) {
+export function DatenschutzPageClient() {
   const { t, locale } = useI18n();
   const ds = t.datenschutz;
 
   const s4body = ds.s4p1.replace(/\{\{email\}\}/g, SITE_EMAIL);
 
-  const pasted = locale === "de" ? pastedHtmlDe : pastedHtmlEn;
+  const html = ds.htmlBody.trim();
 
-  if (pasted) {
+  if (html) {
     return (
       <>
         <LegalPageHeader />
@@ -38,7 +30,7 @@ export function DatenschutzPageClient({
           >
             <div
               className="legal-html mt-6"
-              dangerouslySetInnerHTML={{ __html: pasted }}
+              dangerouslySetInnerHTML={{ __html: html }}
             />
             <Link
               href="/#hero"

@@ -36,5 +36,5 @@ Thumbs.db
 !.cursor/rules/
 !.cursor/rules/**
 
-# Lokalni pravni HTML (nalepi sadržaj — ne commitovati)
+# Opciono: lokalni scratch fajlovi (sadržaj je u dictionaries/*.json)
 private-legal/*.html
