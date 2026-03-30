@@ -28,7 +28,7 @@ function DatenschutzPdfDownload() {
       <a
         href={href}
         download={downloadName}
-        className="inline-flex items-center gap-2 rounded-lg border border-indigo-400/35 bg-indigo-500/10 px-4 py-2.5 text-sm font-medium text-indigo-100 transition-colors hover:border-indigo-400/55 hover:bg-indigo-500/18"
+        className="inline-flex min-h-[2.75rem] items-center gap-2 rounded-lg border border-indigo-400/35 bg-indigo-500/10 px-4 py-2.5 text-sm font-medium text-indigo-100 transition-colors hover:border-indigo-400/55 hover:bg-indigo-500/18"
       >
         <FileDown className="h-4 w-4 shrink-0" aria-hidden />
         {t.datenschutz.downloadPdf}

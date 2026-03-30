@@ -142,7 +142,7 @@ export function ContactFormWithConsent({
           type="checkbox"
           value="true"
           aria-required="true"
-          className="mt-1 h-4 w-4 shrink-0 rounded border-zinc-400 bg-zinc-100 text-emerald-600 focus:ring-2 focus:ring-emerald-500/30 disabled:opacity-60 dark:border-white/20 dark:bg-slate-900 dark:text-emerald-500 dark:focus:ring-emerald-400/30"
+          className="mt-0.5 h-5 w-5 shrink-0 rounded border-zinc-400 bg-zinc-100 text-emerald-600 focus:ring-2 focus:ring-emerald-500/30 disabled:opacity-60 dark:border-white/20 dark:bg-slate-900 dark:text-emerald-500 dark:focus:ring-emerald-400/30"
           disabled={isPending}
         />
         <label
@@ -156,7 +156,7 @@ export function ContactFormWithConsent({
       <button
         type="submit"
         disabled={isPending}
-        className="w-full rounded-xl bg-zinc-900 py-3.5 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+        className="w-full rounded-xl bg-zinc-900 py-3.5 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200 min-h-[2.75rem]"
       >
         {isPending ? labels.sending : labels.submit}
       </button>

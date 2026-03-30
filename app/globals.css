@@ -6,6 +6,32 @@
   ::selection {
     @apply bg-emerald-500/30 text-white;
   }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+      env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  img,
+  video,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 /* Eingefügtes Rechts-HTML (z. B. Export) — uklapa se u tamnu temu */

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactElement, SVGProps } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -193,6 +194,17 @@ const projectHeaderVisuals = [
 
 function SiteHeader() {
   const { t } = useI18n();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const close = useCallback(() => setMobileOpen(false), []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen, close]);
+
   const nav = [
     { href: "#expertise", label: t.nav.expertise },
     { href: "#about", label: t.nav.about },
@@ -203,14 +215,17 @@ function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-terminal-bg/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-3 pl-4 pr-[max(0.875rem,env(safe-area-inset-right))] sm:px-6 sm:pl-6 sm:pr-6 lg:px-8">
         <Link
           href="#hero"
-          className="inline-flex min-h-11 max-w-[min(100%,18rem)] items-center gap-2.5 rounded-md text-sm font-semibold leading-tight tracking-tight text-white [-webkit-tap-highlight-color:transparent] sm:max-w-none sm:gap-3"
+          onClick={close}
+          className="inline-flex min-h-[2.75rem] min-w-0 shrink items-center gap-2 rounded-md text-sm font-semibold leading-tight tracking-tight text-white sm:min-w-[2.75rem] sm:shrink-0 sm:gap-3"
         >
-          <KDSLogo className="h-8 w-auto shrink-0 text-white sm:h-9" />
-          <span className="min-w-0">{BRAND_NAME}</span>
+          <KDSLogo className="h-7 w-auto shrink-0 text-white sm:h-8 md:h-9" />
+          <span className="hidden min-w-0 sm:inline">{BRAND_NAME}</span>
         </Link>
+
+        {/* Desktop nav */}
         <nav
           className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex"
           aria-label="Primary"
@@ -219,22 +234,68 @@ function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-white"
+              className="inline-flex min-h-[2.75rem] items-center transition-colors hover:text-white"
             >
               {item.label}
             </Link>
           ))}
         </nav>
-        <div className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-4">
+
+        <div className="flex shrink-0 items-center gap-1 sm:gap-4">
           <LanguageSwitcher />
           <Link
             href="#contact"
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-emerald-500 px-4 text-xs font-semibold text-white shadow-sm shadow-emerald-950/30 transition hover:bg-emerald-400 [-webkit-tap-highlight-color:transparent] sm:px-5 sm:text-sm"
+            onClick={close}
+            className="hidden min-h-[2.75rem] items-center justify-center rounded-full bg-emerald-500 px-5 text-sm font-semibold text-white shadow-sm shadow-emerald-950/30 transition hover:bg-emerald-400 sm:inline-flex"
           >
             {t.headerCta}
           </Link>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            onClick={() => setMobileOpen((o) => !o)}
+            className="inline-flex min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-lg text-slate-300 transition-colors hover:bg-white/10 hover:text-white md:hidden"
+            aria-expanded={mobileOpen}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileOpen ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M18 6 6 18M6 6l12 12" /></svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Mobile slide-down panel */}
+      {mobileOpen && (
+        <nav
+          className="border-t border-white/[0.06] bg-terminal-bg/95 px-4 pb-6 pt-3 backdrop-blur-xl md:hidden"
+          aria-label="Mobile"
+        >
+          <ul className="flex flex-col gap-1">
+            {nav.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  onClick={close}
+                  className="flex min-h-[2.75rem] items-center rounded-lg px-3 text-base font-medium text-slate-300 transition-colors hover:bg-white/[0.06] hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="#contact"
+            onClick={close}
+            className="mt-4 flex min-h-[2.75rem] w-full items-center justify-center rounded-full bg-emerald-500 text-sm font-semibold text-white shadow-sm shadow-emerald-950/30 transition hover:bg-emerald-400"
+          >
+            {t.headerCta}
+          </Link>
+        </nav>
+      )}
     </header>
   );
 }
@@ -247,7 +308,7 @@ function HeroSection() {
     <div className="relative z-[1] shadow-[0_32px_72px_-10px_rgba(0,0,0,0.55),0_16px_40px_-16px_rgba(0,0,0,0.35)]">
     <section
       id="hero"
-      className="scroll-mt-24 relative isolate min-h-[100dvh] overflow-x-hidden bg-transparent pb-20 pt-24 sm:pb-24 sm:pt-28 md:pb-32 md:pt-32 lg:pb-40"
+      className="scroll-mt-24 relative isolate flex min-h-[100dvh] flex-col overflow-x-hidden bg-transparent pb-10 pt-20 sm:pb-24 sm:pt-28 md:pb-32 md:pt-32 lg:pb-40"
       aria-labelledby="hero-heading"
     >
       <HeroVisual />
@@ -263,32 +324,41 @@ function HeroSection() {
         className="pointer-events-none absolute inset-x-0 bottom-0 z-[8] h-40 bg-gradient-to-b from-transparent via-black/35 to-terminal-bg sm:h-48"
         aria-hidden
       />
-      <div className="relative z-10 mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
-        <FadeIn>
-          <p className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center px-4 py-4 text-center sm:px-6 sm:py-6 md:py-8 lg:px-8">
+        <FadeIn className="flex w-full max-w-3xl flex-col items-center text-center">
+          <p className="mb-4 w-full text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400 sm:mb-6">
             {h.kicker}
           </p>
           <h1
             id="hero-heading"
-            className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.08]"
+            className="relative z-10 w-full max-w-3xl text-[clamp(1.75rem,5vw,3.5rem)] font-semibold leading-[1.12] tracking-tight sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.08]"
           >
             <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
               {h.title}
             </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400 sm:text-xl">
+          {/* Watermark tačno u traci između naslova i podnaslova (iznad 3D pozadine, ispod teksta) */}
+          <div
+            className="relative z-[1] flex w-full min-h-[clamp(3.25rem,14vw,5.5rem)] max-w-[100vw] items-center justify-center px-1 py-2 sm:min-h-[4rem] sm:px-2 md:min-h-[4.75rem]"
+            aria-hidden
+          >
+            <span className="pointer-events-none w-full min-w-0 overflow-hidden text-center font-mono uppercase leading-none whitespace-nowrap text-white/[0.36] text-[clamp(0.72rem,0.42rem+3.4vw,2.65rem)] tracking-[0.05em] drop-shadow-[0_0_24px_rgba(255,255,255,0.08)] sm:tracking-[0.1em] md:tracking-[0.16em] lg:tracking-[0.22em]">
+              Kresic Digital Systems
+            </span>
+          </div>
+          <p className="relative z-10 mt-1 w-full max-w-2xl text-base leading-relaxed text-slate-200 sm:mt-2 sm:text-lg md:mt-3 md:text-xl">
             {h.sub}
           </p>
-          <div className="mx-auto mt-16 flex w-full max-w-sm flex-col items-stretch gap-4 sm:mt-20 md:mt-28">
+          <div className="mx-auto mt-16 flex w-full max-w-sm flex-col items-stretch gap-3 sm:mt-10 md:mt-12 sm:gap-4">
             <Link
               href="#contact"
-              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-white px-8 text-sm font-semibold text-slate-950 shadow-lg transition hover:bg-slate-200"
+              className="inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-slate-950 shadow-lg transition hover:bg-slate-200 sm:px-8"
             >
               {h.ctaPrimary}
             </Link>
             <Link
               href="#expertise"
-              className="inline-flex h-12 w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.06] px-8 text-sm font-semibold text-slate-200 backdrop-blur-sm transition hover:border-white/25 hover:bg-white/[0.1]"
+              className="inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.06] px-6 text-sm font-semibold text-slate-200 backdrop-blur-sm transition hover:border-white/25 hover:bg-white/[0.1] sm:px-8"
             >
               {h.ctaSecondary}
             </Link>
@@ -307,7 +377,7 @@ function ServicesSection() {
   return (
     <section
       id="expertise"
-      className="scroll-mt-24 border-b border-white/[0.06] bg-terminal-bg py-20 md:py-28"
+      className="scroll-mt-24 border-b border-white/[0.06] bg-terminal-bg py-14 sm:py-20 md:py-28"
       aria-labelledby="services-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -318,14 +388,14 @@ function ServicesSection() {
             </p>
             <h2
               id="services-heading"
-              className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl"
+              className="mt-3 text-2xl font-semibold tracking-tight text-white sm:mt-4 sm:text-3xl md:text-4xl"
             >
               {s.title}
             </h2>
-            <p className="mt-4 text-lg leading-relaxed text-slate-400">{s.body}</p>
+            <p className="mt-3 text-base leading-relaxed text-slate-400 sm:mt-4 sm:text-lg">{s.body}</p>
           </div>
         </FadeIn>
-        <ul className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-4">
+        <ul className="mt-10 grid grid-cols-1 gap-4 sm:mt-14 sm:gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-4">
           {s.cards.map((card, index) => {
             const Icon = expertiseIcons[index];
             return (
@@ -362,18 +432,18 @@ function AboutSection() {
   return (
     <section
       id="about"
-      className="scroll-mt-24 border-b border-white/[0.08] bg-terminal-bg py-20 md:py-28"
+      className="scroll-mt-24 border-b border-white/[0.08] bg-terminal-bg py-14 sm:py-20 md:py-28"
       aria-labelledby="about-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="grid grid-cols-1 items-start gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-16">
           <FadeIn className="max-w-xl lg:max-w-none">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-400/90">
               {a.eyebrow}
             </p>
             <h2
               id="about-heading"
-              className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl sm:leading-tight"
+              className="mt-3 text-2xl font-semibold tracking-tight text-white sm:mt-4 sm:text-3xl sm:leading-tight md:text-4xl"
             >
               {a.title}
             </h2>
@@ -422,7 +492,7 @@ function ProjectsSection() {
   return (
     <section
       id="work"
-      className="scroll-mt-24 border-b border-white/[0.08] bg-terminal-bg py-20 md:py-28"
+      className="scroll-mt-24 border-b border-white/[0.08] bg-terminal-bg py-14 sm:py-20 md:py-28"
       aria-labelledby="work-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -431,7 +501,7 @@ function ProjectsSection() {
             <div className="max-w-2xl">
               <h2
                 id="work-heading"
-                className="text-3xl font-semibold tracking-tight text-white sm:text-4xl"
+                className="text-2xl font-semibold tracking-tight text-white sm:text-3xl md:text-4xl"
               >
                 {p.title}
               </h2>
@@ -456,7 +526,7 @@ function ProjectsSection() {
             </p>
           </div>
         </FadeIn>
-        <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-8">
+        <div className="mt-10 grid grid-cols-1 gap-6 sm:mt-14 sm:gap-8 lg:grid-cols-3 lg:gap-8">
           {p.featured.map((project, index) => {
             const HeaderVisual = projectHeaderVisuals[index] ?? projectHeaderVisuals[0];
             const githubUrl = project.githubUrl;
@@ -576,15 +646,15 @@ function ContactSection() {
   return (
     <section
       id="contact"
-      className="scroll-mt-24 bg-terminal-bg py-20 md:py-28"
+      className="scroll-mt-24 bg-terminal-bg py-14 sm:py-20 md:py-28"
       aria-labelledby="contact-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
+        <div className="grid grid-cols-1 gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
           <FadeIn>
             <h2
               id="contact-heading"
-              className="text-3xl font-semibold tracking-tight text-white sm:text-4xl"
+              className="text-2xl font-semibold tracking-tight text-white sm:text-3xl md:text-4xl"
             >
               {t.contact.title}
             </h2>
@@ -622,9 +692,9 @@ function ContactSection() {
 
 function SiteFooter() {
   return (
-    <footer className="border-t border-white/[0.08] bg-terminal-bg py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 px-4 sm:px-6 lg:px-8">
-        <KDSLogo className="h-14 w-auto text-slate-300 md:h-16" />
+    <footer className="border-t border-white/[0.08] bg-terminal-bg py-8 sm:py-10">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 sm:gap-8 sm:px-6 lg:px-8">
+        <KDSLogo className="h-12 w-auto text-slate-300 sm:h-14 md:h-16" />
         <div className="flex w-full flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
           <p className="text-sm text-slate-500">
             © 2026 Danijel Kresic | Kresic Digital Systems

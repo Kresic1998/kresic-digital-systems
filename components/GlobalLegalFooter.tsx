@@ -11,19 +11,19 @@ export function GlobalLegalFooter() {
       role="contentinfo"
     >
       <nav
-        className="mx-auto flex max-w-6xl flex-wrap justify-center gap-x-8 gap-y-2 px-4 text-center text-sm font-medium text-slate-400 sm:px-6 lg:px-8"
+        className="mx-auto flex max-w-6xl flex-wrap justify-center gap-x-6 gap-y-1 px-4 text-center text-sm font-medium text-slate-400 sm:gap-x-8 sm:px-6 lg:px-8"
         aria-label="Rechtliche Hinweise"
       >
         <Link
           href="/impressum"
-          className="transition-colors hover:text-white"
+          className="inline-flex min-h-[2.75rem] items-center transition-colors hover:text-white"
           prefetch={false}
         >
           Impressum
         </Link>
         <Link
           href="/datenschutz"
-          className="transition-colors hover:text-white"
+          className="inline-flex min-h-[2.75rem] items-center transition-colors hover:text-white"
           prefetch={false}
         >
           Datenschutzerklärung

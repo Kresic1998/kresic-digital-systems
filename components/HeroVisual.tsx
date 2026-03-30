@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
+import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -25,6 +25,22 @@ export default function App() {
     const { w: iw, h: ih } = getSize();
     const camera = new THREE.PerspectiveCamera(75, iw / ih, 0.1, 2000);
     camera.position.z = 450;
+
+    const applyCameraForWidth = (w: number) => {
+      if (w < 400) {
+        camera.position.z = 640;
+        camera.fov = 78;
+      } else if (w < 640) {
+        camera.position.z = 560;
+        camera.fov = 76;
+      } else if (w < 900) {
+        camera.position.z = 500;
+        camera.fov = 75;
+      } else {
+        camera.position.z = 450;
+        camera.fov = 75;
+      }
+    };
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -80,7 +96,8 @@ export default function App() {
       vertexColors: true,
       transparent: true,
       opacity: 0.9,
-      blending: THREE.AdditiveBlending 
+      blending: THREE.AdditiveBlending,
+      sizeAttenuation: true,
     });
 
     const pointCloud = new THREE.Points(particlesGeom, particlesMat);
@@ -127,12 +144,16 @@ export default function App() {
     const applySize = () => {
       const { w, h } = getSize();
       camera.aspect = w / h;
+      applyCameraForWidth(w);
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      const narrow = w < 640;
+      particlesMat.size = narrow ? 1.35 : 1.8;
     };
 
     const resizeObserver = new ResizeObserver(() => applySize());
     resizeObserver.observe(container);
+    applySize();
 
     // --- 4. Animaciona petlja ---
     let animationFrameId: number;
@@ -225,13 +246,6 @@ export default function App() {
       ref={containerRef} 
       className="pointer-events-none absolute inset-0 z-0 min-h-full w-full bg-terminal-bg overflow-hidden"
     >
-      {/* Centralni žig (Kresic Digital Systems) - Optimizovana vidljivost */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none px-6 text-center">
-        <h2 className="font-mono text-white/[0.32] text-[5vw] md:text-[3.5vw] tracking-[0.6em] uppercase whitespace-nowrap drop-shadow-[0_0_24px_rgba(255,255,255,0.06)] transition-opacity duration-1000">
-          Kresic Digital Systems
-        </h2>
-      </div>
-
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.04)_0%,transparent_75%)] pointer-events-none"></div>
 
       {/* HUD Overlay */}
