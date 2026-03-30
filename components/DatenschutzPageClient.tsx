@@ -1,5 +1,6 @@
 "use client";
 
+import { FileDown } from "lucide-react";
 import Link from "next/link";
 
 import { LegalPageHeader } from "@/components/LegalPageHeader";
@@ -10,6 +11,29 @@ import {
   SITE_EMAIL,
 } from "@/lib/site";
 import { useI18n } from "@/lib/i18n";
+
+function DatenschutzPdfDownload() {
+  const { t, locale } = useI18n();
+  const href =
+    locale === "de" ? "/legal/datenschutz-de.pdf" : "/legal/datenschutz-en.pdf";
+  const downloadName =
+    locale === "de"
+      ? "KDS-Datenschutzerklaerung-DE.pdf"
+      : "KDS-Privacy-Policy-EN.pdf";
+
+  return (
+    <div className="mb-8 flex flex-wrap justify-end border-b border-white/10 pb-6">
+      <a
+        href={href}
+        download={downloadName}
+        className="inline-flex items-center gap-2 rounded-lg border border-indigo-400/35 bg-indigo-500/10 px-4 py-2.5 text-sm font-medium text-indigo-100 transition-colors hover:border-indigo-400/55 hover:bg-indigo-500/18"
+      >
+        <FileDown className="h-4 w-4 shrink-0" aria-hidden />
+        {t.datenschutz.downloadPdf}
+      </a>
+    </div>
+  );
+}
 
 export function DatenschutzPageClient() {
   const { t, locale } = useI18n();
@@ -28,6 +52,7 @@ export function DatenschutzPageClient() {
             className="mx-auto max-w-2xl px-4 pb-16 pt-24 sm:px-6 sm:pb-24 sm:pt-28 lg:px-8 lg:pb-24"
             lang={locale}
           >
+            <DatenschutzPdfDownload />
             <div
               className="legal-html mt-6"
               dangerouslySetInnerHTML={{ __html: html }}
@@ -60,6 +85,8 @@ export function DatenschutzPageClient() {
           </h1>
 
           <p className="mt-4 text-sm leading-relaxed text-slate-400">{ds.stand}</p>
+
+          <DatenschutzPdfDownload />
 
           <div className="legal-html mt-12 space-y-10 text-sm leading-relaxed text-slate-300">
             <section className="border-b border-white/10 pb-10">

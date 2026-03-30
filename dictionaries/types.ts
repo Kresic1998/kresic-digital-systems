@@ -116,5 +116,6 @@ export type LandingDictionary = {
     s6Title: string;
     s6p1: string;
     backHome: string;
+    downloadPdf: string;
   };
 };
