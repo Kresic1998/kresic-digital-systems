@@ -8,59 +8,59 @@
   }
 }
 
-/* eRecht24 API HTML — uklapa se u tamnu temu sajta */
+/* Eingefügtes Rechts-HTML (z. B. Export) — uklapa se u tamnu temu */
 @layer components {
-  .erecht24-legal {
+  .legal-html {
     @apply text-sm leading-relaxed text-slate-300;
   }
 
-  .erecht24-legal :where(h1, h2, h3, h4) {
+  .legal-html :where(h1, h2, h3, h4) {
     @apply font-semibold tracking-tight text-white;
   }
 
-  .erecht24-legal h1 {
-    @apply mt-8 text-2xl first:mt-0;
+  .legal-html h1 {
+    @apply mt-8 text-3xl font-semibold tracking-tight text-white first:mt-0 sm:text-4xl;
   }
 
-  .erecht24-legal h2 {
+  .legal-html h2 {
     @apply mt-8 border-b border-white/10 pb-2 text-base first:mt-0;
   }
 
-  .erecht24-legal h3 {
+  .legal-html h3 {
     @apply mt-6 text-sm;
   }
 
-  .erecht24-legal p {
+  .legal-html p {
     @apply mt-3 text-slate-400;
   }
 
-  .erecht24-legal a {
+  .legal-html a {
     @apply text-indigo-300 underline-offset-2 hover:underline;
   }
 
-  .erecht24-legal ul,
-  .erecht24-legal ol {
+  .legal-html ul,
+  .legal-html ol {
     @apply mt-3 list-inside space-y-2 text-slate-400;
   }
 
-  .erecht24-legal ul {
+  .legal-html ul {
     @apply list-disc;
   }
 
-  .erecht24-legal ol {
+  .legal-html ol {
     @apply list-decimal;
   }
 
-  .erecht24-legal strong {
+  .legal-html strong {
     @apply font-semibold text-slate-200;
   }
 
-  .erecht24-legal table {
+  .legal-html table {
     @apply mt-4 w-full border-collapse text-left text-slate-400;
   }
 
-  .erecht24-legal th,
-  .erecht24-legal td {
+  .legal-html th,
+  .legal-html td {
     @apply border border-white/10 px-3 py-2 align-top;
   }
 }

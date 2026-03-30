@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -24,11 +25,15 @@ type I18nContextValue = {
 const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<LocaleCode>("en");
+  const [locale, setLocaleState] = useState<LocaleCode>("de");
 
   const setLocale = useCallback((next: LocaleCode) => {
     setLocaleState(next);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = locale === "de" ? "de" : "en";
+  }, [locale]);
 
   const value = useMemo<I18nContextValue>(
     () => ({

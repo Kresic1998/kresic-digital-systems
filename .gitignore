@@ -35,3 +35,6 @@ Thumbs.db
 .cursor/*
 !.cursor/rules/
 !.cursor/rules/**
+
+# Lokalni pravni HTML (nalepi sadržaj — ne commitovati)
+private-legal/*.html
