@@ -49,6 +49,22 @@ function messages(locale: string) {
 
 const isDev = process.env.NODE_ENV === "development";
 
+/** Resend returns `error` as JSON (often `{ name, message, statusCode }`); log a full string for Vercel. */
+function formatResendError(error: unknown): string {
+  if (error == null) return String(error);
+  if (typeof error === "string") return error;
+  if (error instanceof Error) return error.message;
+  if (typeof error === "object") {
+    const o = error as Record<string, unknown>;
+    if (typeof o.message === "string") return o.message;
+  }
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}
+
 export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
   // Locale is a UI hint for error message language only; unknown values default to EN
   const rawLocale = String(formData.get("locale") ?? "en");
@@ -140,12 +156,8 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
     });
 
     if (error) {
-      console.error(
-        "[sendEmail] Resend error:",
-        typeof error === "object" && error !== null && "message" in error
-          ? (error as { message: string }).message
-          : error
-      );
+      console.error("[sendEmail] Resend error:", formatResendError(error));
+      console.error("[sendEmail] Resend error (raw):", JSON.stringify(error));
       return { success: false, error: t.sendFailed };
     }
 

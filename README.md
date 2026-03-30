@@ -145,7 +145,7 @@ Before release: **`npm run build`** should complete cleanly; keep **`npx tsc --n
 
 - **GDPR / DACH** — Imprint and privacy pages describe processing (hosting, contact via email provider), legal bases, retention, and data-subject rights. Adjust copy only with legal review.
 - **No cookie banner for analytics** — As long as you do not add trackers or non-essential cookies, the current positioning (no analytics scripts in tree) avoids a consent banner for that class of tooling. Re-evaluate if you add Plausible, GA, etc.
-- **Secrets** — `RESEND_API_KEY` exists only in server code paths. Dev-only logging in `sendEmail` is gated by `NODE_ENV === "development"`.
+- **Secrets** — `RESEND_API_KEY` exists only in server code paths. Server logs for failed sends (including production) may include Resend API error text — avoid pasting production logs into public channels if they contain internal details.
 
 For a chronological list of hardening or incident-related edits, see **`REPAIR_LOG.md`** when maintained.
 
@@ -156,6 +156,7 @@ For a chronological list of hardening or incident-related edits, see **`REPAIR_L
 | Symptom | Likely cause |
 |---------|----------------|
 | Contact form returns “not configured” | Missing/empty `RESEND_API_KEY` or invalid production `RESEND_FROM_EMAIL`. |
+| “Could not send” / DE *Nachricht konnte nicht gesendet werden* (after deploy) | Resend rejected the request. In **Vercel → Logs**, search for `[sendEmail] Resend error`. Typical causes: `from` not on a **verified domain** in Resend, domain DNS (SPF/DKIM) not complete, or `RESEND_FROM_EMAIL` typo. Until a domain is verified, Resend may only allow sending to your account email — the form always sends **to** `SITE_EMAIL` in `lib/site.ts` (your inbox). |
 | Emails fail only on Vercel | Env vars not set for the right environment, or domain/sender not verified in Resend. |
 | Type errors after editing copy | Add keys to **both** `en.json` and `de.json`, and update `dictionaries/types.ts` if the shape changes. |
 | `PageNotFoundError` / missing routes during `next build` | Remove the `.next` folder and run **`npm run build`** again (stale build output after major upgrades). |
