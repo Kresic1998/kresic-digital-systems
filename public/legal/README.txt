@@ -1,8 +1,8 @@
-Datenschutz PDFs (static download)
+Static PDFs (committed to git)
 
-Place your exported PDFs here with these exact names so the site links work:
+  datenschutzerklaerung_kresic_digital_system_de.pdf
+  datenschutzerklaerung_kresic_digital_system_en.pdf
+  impressum_kresic_digital_system_de.pdf
+  impressum_kresic_digital_system_en.pdf
 
-  datenschutz-de.pdf   — German version  →  /legal/datenschutz-de.pdf
-  datenschutz-en.pdf   — English version   →  /legal/datenschutz-en.pdf
-
-Then commit the files (they are served from /public).
+URLs: /legal/<filename>

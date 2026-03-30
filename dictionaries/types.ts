@@ -94,6 +94,7 @@ export type LandingDictionary = {
     kleinunternehmerBody: string;
     disclaimer: string;
     backHome: string;
+    downloadPdf: string;
   };
   datenschutz: {
     htmlBody: string;

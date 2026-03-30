@@ -15,11 +15,13 @@ import { useI18n } from "@/lib/i18n";
 function DatenschutzPdfDownload() {
   const { t, locale } = useI18n();
   const href =
-    locale === "de" ? "/legal/datenschutz-de.pdf" : "/legal/datenschutz-en.pdf";
+    locale === "de"
+      ? "/legal/datenschutzerklaerung_kresic_digital_system_de.pdf"
+      : "/legal/datenschutzerklaerung_kresic_digital_system_en.pdf";
   const downloadName =
     locale === "de"
-      ? "KDS-Datenschutzerklaerung-DE.pdf"
-      : "KDS-Privacy-Policy-EN.pdf";
+      ? "datenschutzerklaerung_kresic_digital_system_de.pdf"
+      : "datenschutzerklaerung_kresic_digital_system_en.pdf";
 
   return (
     <div className="mb-8 flex flex-wrap justify-end border-b border-white/10 pb-6">
