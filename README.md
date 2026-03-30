@@ -21,8 +21,8 @@ This is not a generic template; structure and copy reflect how the business is p
 
 | Layer | Choice | Notes |
 |-------|--------|--------|
-| Framework | **Next.js 14** (App Router) | Server Actions for email; RSC-friendly layout; client islands where needed (`"use client"`). |
-| Runtime | **React 18**, **TypeScript** (strict) | `noEmit` typecheck in CI/local workflow; dictionaries typed via `LandingDictionary`. |
+| Framework | **Next.js 15** (App Router) | Server Actions for email; RSC-friendly layout; client islands where needed (`"use client"`). |
+| Runtime | **React 19**, **TypeScript** (strict) | `noEmit` typecheck in CI/local workflow; dictionaries typed via `LandingDictionary`. |
 | Styling | **Tailwind CSS 3** | `darkMode: "class"`; extended **`terminal`** colors in `tailwind.config.ts`. |
 | 3D | **Three.js** | Hero particle/visual (`HeroVisual.tsx`); sized to container + `ResizeObserver`. |
 | Motion | **Framer Motion** | Scoped to **`/demo/market-analytics`**; landing uses `FadeIn` + CSS transitions. |
@@ -108,7 +108,7 @@ Copy `.env.example` → `.env.local` and fill values. Never commit `.env.local`.
 
 ## Scripts & local development
 
-**Prerequisites:** Node.js **≥ 20**, npm **≥ 10** (aligned with typical Next 14 toolchains).
+**Prerequisites:** Node.js **≥ 20**, npm **≥ 10** (aligned with Next 15 / React 19 toolchains).
 
 ```bash
 git clone <repository-url>
@@ -127,7 +127,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run dev` | Development server |
 | `npm run build` | Production build |
 | `npm start` | Serve production build |
-| `npm run lint` | ESLint (Next config) |
+| `npm run lint` | ESLint via `next lint` (`.eslintrc.json` → `next/core-web-vitals`; Next 16 will move to the ESLint CLI — see upstream migration notes). |
 
 Before release: **`npm run build`** should complete cleanly; keep **`npx tsc --noEmit`** green in your workflow if you rely on stricter checks than lint alone.
 
@@ -158,6 +158,7 @@ For a chronological list of hardening or incident-related edits, see **`REPAIR_L
 | Contact form returns “not configured” | Missing/empty `RESEND_API_KEY` or invalid production `RESEND_FROM_EMAIL`. |
 | Emails fail only on Vercel | Env vars not set for the right environment, or domain/sender not verified in Resend. |
 | Type errors after editing copy | Add keys to **both** `en.json` and `de.json`, and update `dictionaries/types.ts` if the shape changes. |
+| `PageNotFoundError` / missing routes during `next build` | Remove the `.next` folder and run **`npm run build`** again (stale build output after major upgrades). |
 
 ---
 
