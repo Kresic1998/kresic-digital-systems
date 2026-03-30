@@ -27,6 +27,10 @@ function messages(locale: string) {
     notConfigured: de
       ? "E-Mail-Versand ist nicht konfiguriert."
       : "Email service is not configured.",
+    /** Production requires RESEND_FROM_EMAIL; dev falls back to onboarding@resend.dev */
+    senderNotConfigured: de
+      ? "E-Mail-Absender ist für den Live-Betrieb nicht konfiguriert."
+      : "Email sender is not configured for production.",
     fillAll: de
       ? "Bitte füllen Sie alle Felder aus."
       : "Please fill in all fields.",
@@ -115,7 +119,7 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
         "[sendEmail] RESEND_FROM_EMAIL is not set. Required in production."
       );
     }
-    return { success: false, error: t.notConfigured };
+    return { success: false, error: t.senderNotConfigured };
   }
 
   const resend = new Resend(apiKey);
