@@ -58,29 +58,33 @@
     "intro": "Selected examples across maintenance, automation, and analytics—from stable web stacks to data-driven tooling.",
     "tagline": "Maintenance · automation · analytics tools",
     "caseStudy": "Case study",
+    "viewOnGithub": "VIEW ON GITHUB",
+    "restrictedAccess": "RESTRICTED ACCESS",
     "legalNote": "Important notice: Our financial solutions are for analysis and information purposes only. We do not build systems for automated trade execution (trading bots).",
     "demoIntro": "Interactive mock terminal: correlation heatmap and scanner UI—deterministic demo data only.",
     "featured": [
       {
         "role": "Operations & reporting",
-        "name": "Automated financial & inventory dashboards",
-        "summary": "Centralized metrics, near real-time stock visibility, and automated reporting—for teams that need less manual spreadsheet work and more operational clarity.",
-        "outcome": "Python-based reporting pipelines consolidate ERP exports, databases, and spreadsheets into scheduled leadership packs—cutting manual close work and shrinking time-to-insight from days to hours.",
-        "tags": ["Python", "pandas", "REST APIs", "Automation", "Reporting"]
+        "name": "ERP reporting & data pipelines",
+        "summary": "Architecture for automated ERP reporting and data pipelines.",
+        "outcome": "Proprietary logic under NDA.",
+        "tags": ["ERP", "Pipelines", "Automation", "Reporting", "NDA"]
       },
       {
         "role": "Web & commerce",
-        "name": "Scalable storefront & portal architecture",
-        "summary": "Fast Next.js front ends, clean API integrations, and dependable payment flows—from integration through launch with stability as the default.",
-        "outcome": "High-performance Next.js builds with typed boundaries, edge-ready deployments, and accessible UI patterns—Core Web Vitals–oriented delivery your team can extend without rework.",
-        "tags": ["Next.js", "TypeScript", "Tailwind CSS", "Vercel", "APIs"]
+        "name": "3D portfolio — Next.js & Three.js",
+        "summary": "Source code for this site: immersive 3D hero, Next.js App Router, and a stack tuned for fast iteration and clear structure.",
+        "outcome": "Demonstrates Three.js-driven visuals, TypeScript boundaries, Tailwind styling, and Vercel edge deployment as a reference implementation you can fork and extend.",
+        "tags": ["Next.js", "Three.js", "TypeScript", "Vercel", "Edge"],
+        "githubUrl": "https://github.com/Kresic1998/kresic-digital-systems"
       },
       {
         "role": "Analytics & research",
-        "name": "Data-driven market & strategy tooling",
-        "summary": "Indicators, scripts, and backtesting setups to interpret markets—as decision support, not automated order execution.",
-        "outcome": "We build research-grade indicators, notebooks, and backtests for discretionary decisions only. We do not build trading bots or any system that places or routes live orders—deliverables are analysis and decision-support tooling, full stop.",
-        "tags": ["Quant", "Python", "TradingView", "Research", "Backtesting"]
+        "name": "Quant Market Analytics demo",
+        "summary": "Functional demo terminal with PIT engineering discipline and multi-source data ingestion feeding correlation and scanner-style views—deterministic showcase data only.",
+        "outcome": "Browse the dedicated github-showcase folder for the runnable demo wiring; aligns with research and decision-support workflows, not live order execution.",
+        "tags": ["Quant", "PIT", "Data ingestion", "Next.js", "Demo"],
+        "githubUrl": "https://github.com/Kresic1998/KDS-Engineering-Showcase/tree/main/01-quant-market-analytics/github-showcase"
       }
     ]
   },
@@ -111,6 +115,7 @@
     "email": "Email",
     "message": "Project details",
     "consent": "I agree that my details from the contact form will be collected and processed to answer my request. (Data is handled securely via encrypted channels).",
+    "consentError": "Consent is required to send your message.",
     "submit": "Send message",
     "sending": "Sending…",
     "success": "Thank you—your message was sent. We’ll get back to you soon."

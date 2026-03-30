@@ -11,6 +11,7 @@ export type ContactFormLabels = {
   email: string;
   message: string;
   consent: string;
+  consentError: string;
   submit: string;
   sending: string;
   success: string;
@@ -38,6 +39,14 @@ export function ContactFormWithConsent({
     const formData = new FormData(form);
     setFeedback(null);
 
+    // Avoid native `required` on the checkbox: browsers show that message in OS/browser
+    // language, not the site locale. Server still enforces consent with the same rule.
+    const consent = formData.get("consent");
+    if (consent !== "on" && consent !== "true") {
+      setFeedback({ type: "error", message: labels.consentError });
+      return;
+    }
+
     startTransition(async () => {
       const result = await sendEmail(formData);
       if (result.success) {
@@ -53,6 +62,7 @@ export function ContactFormWithConsent({
     <form
       className="space-y-5"
       aria-label="Contact form"
+      noValidate
       onSubmit={handleSubmit}
     >
       <input type="hidden" name="locale" value={locale} />
@@ -131,7 +141,7 @@ export function ContactFormWithConsent({
           name="consent"
           type="checkbox"
           value="true"
-          required
+          aria-required="true"
           className="mt-1 h-4 w-4 shrink-0 rounded border-zinc-400 bg-zinc-100 text-emerald-600 focus:ring-2 focus:ring-emerald-500/30 disabled:opacity-60 dark:border-white/20 dark:bg-slate-900 dark:text-emerald-500 dark:focus:ring-emerald-400/30"
           disabled={isPending}
         />

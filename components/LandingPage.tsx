@@ -166,6 +166,25 @@ const opSecIcons: readonly IconComponent[] = [
   IconOpSecDiscretion,
 ];
 
+function IconProjectLock(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className="h-[1.05rem] w-[1.05rem] shrink-0 text-amber-400/90"
+      {...props}
+    >
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  );
+}
+
 const projectHeaderVisuals = [
   DataFlowVisual,
   InfrastructureGrid,
@@ -440,6 +459,8 @@ function ProjectsSection() {
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-8">
           {p.featured.map((project, index) => {
             const HeaderVisual = projectHeaderVisuals[index] ?? projectHeaderVisuals[0];
+            const githubUrl = project.githubUrl;
+            const isRestricted = !githubUrl;
             return (
               <FadeIn key={project.name} delay={index * 0.12} className="min-h-0">
                 <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/35 shadow-none transition duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:border-white/20 hover:bg-slate-900/50 hover:shadow-2xl hover:shadow-black/50">
@@ -454,8 +475,9 @@ function ProjectsSection() {
                     <p className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
                       {project.role}
                     </p>
-                    <h3 className="mt-2 text-lg font-semibold text-white">
-                      {project.name}
+                    <h3 className="mt-2 flex items-center gap-2 text-lg font-semibold text-white">
+                      {isRestricted ? <IconProjectLock /> : null}
+                      <span className="min-w-0">{project.name}</span>
                     </h3>
                     <p className="mt-3 text-sm leading-relaxed text-slate-400">
                       {project.summary}
@@ -473,6 +495,27 @@ function ProjectsSection() {
                         </span>
                       ))}
                     </div>
+                    {githubUrl ? (
+                      <a
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-auto inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.04] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-100 shadow-[0_0_28px_-6px_rgba(16,185,129,0.4),inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-md transition hover:border-emerald-400/40 hover:bg-emerald-500/[0.12] hover:text-white hover:shadow-[0_0_36px_-6px_rgba(16,185,129,0.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 sm:text-xs sm:tracking-[0.14em]"
+                      >
+                        {p.viewOnGithub}
+                        <span aria-hidden className="text-base leading-none text-emerald-300/90">
+                          ↗
+                        </span>
+                      </a>
+                    ) : (
+                      <div
+                        role="status"
+                        aria-label={p.restrictedAccess}
+                        className="mt-auto inline-flex w-full items-center justify-center rounded-xl border border-amber-500/25 bg-amber-500/[0.07] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-amber-100/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md sm:text-xs sm:tracking-[0.14em]"
+                      >
+                        {p.restrictedAccess}
+                      </div>
+                    )}
                   </div>
                 </article>
               </FadeIn>

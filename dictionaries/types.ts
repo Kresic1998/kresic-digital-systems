@@ -35,6 +35,8 @@ export type LandingDictionary = {
     intro: string;
     tagline: string;
     caseStudy: string;
+    viewOnGithub: string;
+    restrictedAccess: string;
     legalNote: string;
     demoIntro: string;
     featured: readonly {
@@ -43,6 +45,7 @@ export type LandingDictionary = {
       summary: string;
       outcome: string;
       tags: readonly string[];
+      githubUrl?: string;
     }[];
   };
   opSec: {
@@ -59,6 +62,7 @@ export type LandingDictionary = {
     email: string;
     message: string;
     consent: string;
+    consentError: string;
     submit: string;
     sending: string;
     success: string;

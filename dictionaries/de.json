@@ -58,29 +58,33 @@
     "intro": "Ausgewählte Beispiele aus Wartung, Automatisierung und Analyse—von stabilen Web-Stacks bis zu datengetriebenen Hilfsmitteln.",
     "tagline": "Wartung · Automatisierung · Analyse-Tools",
     "caseStudy": "Fallstudie",
+    "viewOnGithub": "AUF GITHUB ANSEHEN",
+    "restrictedAccess": "EINGESCHRÄNKTER ZUGANG",
     "legalNote": "Wichtiger Hinweis: Unsere Finanzlösungen dienen ausschließlich Analyse- und Informationszwecken. Wir entwickeln keine Systeme für die automatische Handelsausführung (Trading Bots).",
     "demoIntro": "Interaktives Mock-Terminal: Korrelations-Heatmap und Scanner-Oberfläche—nur deterministische Demo-Daten.",
     "featured": [
       {
         "role": "Operations & Reporting",
-        "name": "Automatisierte Finanz- und Bestandsübersichten",
-        "summary": "Zentrale Kennzahlen, Echtzeit-Bestände und automatisierte Reports—für Teams, die weniger manuelle Excel-Arbeit und mehr Klarheit im Tagesgeschäft brauchen.",
-        "outcome": "Python-gestützte Reporting-Pipelines bündeln ERP-Exporte, Datenbanken und Tabellen in terminierte Führungsberichte—weniger manueller Abschlussaufwand und kürzere Zeit bis zur belastbaren Einsicht.",
-        "tags": ["Python", "pandas", "REST-APIs", "Automatisierung", "Reporting"]
+        "name": "ERP-Reporting & Datenpipelines",
+        "summary": "Architektur für automatisiertes ERP-Reporting und Datenpipelines.",
+        "outcome": "Proprietäre Logik unter NDA.",
+        "tags": ["ERP", "Pipelines", "Automatisierung", "Reporting", "NDA"]
       },
       {
         "role": "Web & Commerce",
-        "name": "Skalierbare Shop- und Portalarchitektur",
-        "summary": "Schnelle Next.js-Oberflächen, saubere API-Anbindungen und zuverlässiger Zahlungsfluss—von Integration bis Go-live mit Fokus auf Stabilität.",
-        "outcome": "Hochperformante Next.js-Umsetzungen mit typisierten Schnittstellen, edge-tauglichem Deployment und barrierefreien UI-Mustern—ausgerichtet auf Core Web Vitals und wartbare Erweiterbarkeit.",
-        "tags": ["Next.js", "TypeScript", "Tailwind CSS", "Vercel", "APIs"]
+        "name": "3D-Portfolio — Next.js & Three.js",
+        "summary": "Quellcode dieser Website: immersiver 3D-Hero, Next.js App Router und ein Stack für schnelle Iteration und klare Struktur.",
+        "outcome": "Zeigt Three.js-gestützte Visuals, TypeScript-Schnittstellen, Tailwind-Styling und Vercel-Edge-Deployment als Referenzimplementierung zum Forken und Erweitern.",
+        "tags": ["Next.js", "Three.js", "TypeScript", "Vercel", "Edge"],
+        "githubUrl": "https://github.com/Kresic1998/kresic-digital-systems"
       },
       {
         "role": "Analyse & Research",
-        "name": "Datengetriebene Markt- und Strategie-Tools",
-        "summary": "Indikatoren, Skripte und Backtesting-Setups zur Einordnung von Märkten—als Entscheidungshilfe, nicht als automatisierte Handelsausführung.",
-        "outcome": "Wir liefern forschungsnahe Indikatoren, Notebooks und Backtests ausschließlich zur diskretionären Entscheidungsfindung. Keine Trading-Bots und keine Systeme zur automatischen Order-Platzierung oder -weiterleitung—nur Analyse- und Entscheidungsunterstützung.",
-        "tags": ["Quant", "Python", "TradingView", "Research", "Backtesting"]
+        "name": "Quant Market Analytics Demo",
+        "summary": "Funktionale Demo-Terminal-Oberfläche mit PIT-Engineering und Multi-Source-Data-Ingestion für Korrelations- und Scanner-Ansichten—nur deterministische Showcase-Daten.",
+        "outcome": "Im Ordner github-showcase liegt die lauffähige Demo-Anbindung; ausgerichtet auf Research und Entscheidungsunterstützung, nicht auf Live-Order-Ausführung.",
+        "tags": ["Quant", "PIT", "Data Ingestion", "Next.js", "Demo"],
+        "githubUrl": "https://github.com/Kresic1998/KDS-Engineering-Showcase/tree/main/01-quant-market-analytics/github-showcase"
       }
     ]
   },
@@ -111,6 +115,7 @@
     "email": "E-Mail",
     "message": "Projektdetails",
     "consent": "Ich willige ein, dass meine Angaben aus dem Kontaktformular zur Bearbeitung meiner Anfrage erhoben und verarbeitet werden. (Übermittlung über verschlüsselte Kanäle.)",
+    "consentError": "Bitte bestätigen Sie die Einwilligung, um die Nachricht zu senden.",
     "submit": "Nachricht senden",
     "sending": "Wird gesendet…",
     "success": "Vielen Dank—Ihre Nachricht wurde gesendet. Wir melden uns bald."
