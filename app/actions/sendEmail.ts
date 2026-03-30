@@ -65,11 +65,11 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
   }
 
   if (!apiKey) {
-    if (isDev) {
-      console.warn(
-        "[sendEmail] RESEND_API_KEY missing. Add it to .env.local and restart."
-      );
-    }
+    console.warn(
+      isDev
+        ? "[sendEmail] RESEND_API_KEY missing. Add it to .env.local and restart."
+        : "[sendEmail] RESEND_API_KEY is missing on this deployment. Set it in the host (e.g. Vercel) for Production and Preview, then redeploy."
+    );
     return { success: false, error: t.notConfigured };
   }
 
@@ -114,11 +114,11 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
         : "Kresic Digital Systems <onboarding@resend.dev>";
 
   if (!from) {
-    if (isDev) {
-      console.warn(
-        "[sendEmail] RESEND_FROM_EMAIL is not set. Required in production."
-      );
-    }
+    console.warn(
+      isDev
+        ? "[sendEmail] RESEND_FROM_EMAIL is not set. Required when simulating production (e.g. next start)."
+        : "[sendEmail] RESEND_FROM_EMAIL is not set. Production requires a verified Resend sender (e.g. Name <noreply@yourdomain.com>). Set it on the host and redeploy."
+    );
     return { success: false, error: t.senderNotConfigured };
   }
 
@@ -140,11 +140,21 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
     });
 
     if (error) {
+      console.error(
+        "[sendEmail] Resend error:",
+        typeof error === "object" && error !== null && "message" in error
+          ? (error as { message: string }).message
+          : error
+      );
       return { success: false, error: t.sendFailed };
     }
 
     return { success: true };
-  } catch {
+  } catch (err) {
+    console.error(
+      "[sendEmail] Send failed:",
+      err instanceof Error ? err.message : err
+    );
     return { success: false, error: t.sendFailed };
   }
 }
