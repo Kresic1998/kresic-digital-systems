@@ -22,6 +22,11 @@ const RATE_MAX_REQUESTS = 3;
 const BASIC_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CONTROL_CHARS = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
 
+const GENERIC_ERROR_EN =
+  "Could not send your message. Please try again later.";
+const GENERIC_ERROR_DE =
+  "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.";
+
 // ─── In-memory rate limiter ──────────────────────────────────────────────────
 // Effective while the serverless function stays warm. Cold starts reset the map,
 // which is an acceptable trade-off for a zero-dependency solution — the honeypot
@@ -49,6 +54,16 @@ function checkRate(ip: string): boolean {
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const isDev = process.env.NODE_ENV === "development";
+
+function devLog(
+  level: "log" | "warn" | "error",
+  ...args: unknown[]
+): void {
+  if (!isDev) return;
+  console[level](...args);
+}
 
 function trimEnvValue(raw: string | undefined): string {
   if (typeof raw !== "string") return "";
@@ -98,16 +113,12 @@ function messages(locale: string) {
     rateLimited: de
       ? "Zu viele Anfragen. Bitte versuchen Sie es in einer Minute erneut."
       : "Too many requests. Please try again in a minute.",
-    sendFailed: de
-      ? "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
-      : "Could not send your message. Please try again later.",
+    sendFailed: de ? GENERIC_ERROR_DE : GENERIC_ERROR_EN,
   };
 }
 
-const isDev = process.env.NODE_ENV === "development";
-
 function formatResendError(error: unknown): string {
-  if (error == null) return String(error);
+  if (error == null) return "null/undefined";
   if (typeof error === "string") return error;
   if (error instanceof Error) return error.message;
   if (typeof error === "object") {
@@ -117,7 +128,7 @@ function formatResendError(error: unknown): string {
   try {
     return JSON.stringify(error);
   } catch {
-    return String(error);
+    return "[unserializable error object]";
   }
 }
 
@@ -126,156 +137,168 @@ function formatResendError(error: unknown): string {
 export async function sendEmail(
   formData: FormData,
 ): Promise<SendEmailResult> {
-  const rawLocale = String(formData.get("locale") ?? "en");
-  const locale = rawLocale === "de" ? "de" : "en";
-  const t = messages(locale);
-
-  // ── IP-based rate limiting ─────────────────────────────────────────────────
-
-  const h = await headers();
-  const ip =
-    h.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    h.get("x-real-ip") ??
-    "unknown";
-
-  if (checkRate(ip)) {
-    console.warn(`[sendEmail] Rate-limited IP: ${ip}`);
-    return { success: false, error: t.rateLimited };
-  }
-
-  // ── Honeypot (invisible field filled only by bots) ─────────────────────────
-
-  const honeypot = String(formData.get("website") ?? "");
-  if (honeypot.length > 0) {
-    console.warn(`[sendEmail] Honeypot triggered, IP: ${ip}`);
-    return { success: true };
-  }
-
-  // ── Timing gate (reject sub-human submit speed) ────────────────────────────
-
-  const ts = Number(formData.get("_t") || 0);
-  if (ts > 0 && Date.now() - ts < MIN_SUBMIT_DELAY_MS) {
-    console.warn(`[sendEmail] Timing check failed, IP: ${ip}`);
-    return { success: true };
-  }
-
-  // ── API key ────────────────────────────────────────────────────────────────
-
-  const apiKey = trimEnvValue(process.env.RESEND_API_KEY);
-
-  if (isDev) {
-    console.log("[sendEmail] API Key present:", apiKey.length > 0);
-  }
-
-  if (!apiKey) {
-    console.warn(
-      isDev
-        ? "[sendEmail] RESEND_API_KEY missing. Add it to .env.local and restart."
-        : "[sendEmail] RESEND_API_KEY is missing on this deployment. Set it in the host (e.g. Vercel) for Production and Preview, then redeploy.",
-    );
-    return { success: false, error: t.notConfigured };
-  }
-
-  // ── Input extraction & sanitisation ────────────────────────────────────────
-
-  const name = stripControl(String(formData.get("name") ?? "").trim());
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
-  const message = stripControl(String(formData.get("message") ?? "").trim());
-  const consent = formData.get("consent");
-
-  if (!name || !email || !message) {
-    return { success: false, error: t.fillAll };
-  }
-
-  if (
-    name.length > MAX_NAME_LEN ||
-    email.length > MAX_EMAIL_LEN ||
-    message.length > MAX_MESSAGE_LEN
-  ) {
-    return { success: false, error: t.tooLong };
-  }
-
-  if (consent !== "on" && consent !== "true") {
-    return { success: false, error: t.consent };
-  }
-
-  if (!BASIC_EMAIL.test(email)) {
-    return { success: false, error: t.invalidEmail };
-  }
-
-  // ── Sender / recipient ─────────────────────────────────────────────────────
-
-  const fromRaw = trimEnvValue(process.env.RESEND_FROM_EMAIL);
-  const from =
-    fromRaw.length > 0
-      ? fromRaw
-      : process.env.NODE_ENV === "production"
-        ? null
-        : "Kresic Digital Systems <onboarding@resend.dev>";
-
-  if (!from) {
-    console.warn(
-      isDev
-        ? "[sendEmail] RESEND_FROM_EMAIL is not set."
-        : "[sendEmail] RESEND_FROM_EMAIL is not set. Production requires a verified Resend sender.",
-    );
-    return { success: false, error: t.senderNotConfigured };
-  }
-
-  const toOverride = trimEnvValue(process.env.RESEND_TO_EMAIL);
-  const to =
-    toOverride.length > 0 && BASIC_EMAIL.test(toOverride)
-      ? toOverride
-      : SITE_EMAIL;
-
-  // ── Send with timeout ──────────────────────────────────────────────────────
-
-  const resend = new Resend(apiKey);
-  const safeSubject = `New Lead: ${stripControl(name).slice(0, 80)} — Kresic Digital Systems`;
-
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  // Derive locale early so the catch block can use a safe fallback.
+  let locale: "de" | "en" = "en";
 
   try {
-    const sendPromise = resend.emails.send({
-      from,
-      to: [to],
-      replyTo: email,
-      subject: safeSubject,
-      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
-      html: [
-        `<p><strong>Name:</strong> ${escapeHtml(name)}</p>`,
-        `<p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>`,
-        `<p><strong>Message:</strong></p>`,
-        `<p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>`,
-      ].join(""),
-    });
+    const rawLocale = String(formData.get("locale") ?? "en");
+    locale = rawLocale === "de" ? "de" : "en";
+  } catch {
+    // formData.get can technically throw on corrupt data; keep default "en".
+  }
 
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      timeoutId = setTimeout(
-        () => reject(new Error("Resend API request timed out")),
-        RESEND_TIMEOUT_MS,
-      );
-    });
+  const t = messages(locale);
 
-    const { error } = await Promise.race([sendPromise, timeoutPromise]);
+  try {
+    // ── IP-based rate limiting ───────────────────────────────────────────────
 
-    if (error) {
-      console.error("[sendEmail] Resend error:", formatResendError(error));
-      console.error(
-        "[sendEmail] Resend error (raw):",
-        JSON.stringify(error),
-      );
-      return { success: false, error: t.sendFailed };
+    const h = await headers();
+    const ip =
+      h.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      h.get("x-real-ip") ??
+      "unknown";
+
+    if (checkRate(ip)) {
+      devLog("warn", `[sendEmail] Rate-limited IP: ${ip}`);
+      return { success: false, error: t.rateLimited };
     }
 
-    return { success: true };
-  } catch (err) {
-    console.error(
-      "[sendEmail] Send failed:",
-      err instanceof Error ? err.message : err,
+    // ── Honeypot (invisible field filled only by bots) ───────────────────────
+
+    const honeypot = String(formData.get("website") ?? "");
+    if (honeypot.length > 0) {
+      devLog("warn", `[sendEmail] Honeypot triggered, IP: ${ip}`);
+      return { success: true };
+    }
+
+    // ── Timing gate (reject sub-human submit speed) ──────────────────────────
+
+    const ts = Number(formData.get("_t") || 0);
+    if (ts > 0 && Date.now() - ts < MIN_SUBMIT_DELAY_MS) {
+      devLog("warn", `[sendEmail] Timing check failed, IP: ${ip}`);
+      return { success: true };
+    }
+
+    // ── API key ──────────────────────────────────────────────────────────────
+
+    const apiKey = trimEnvValue(process.env.RESEND_API_KEY);
+
+    devLog("log", "[sendEmail] API Key present:", apiKey.length > 0);
+
+    if (!apiKey) {
+      devLog(
+        "warn",
+        "[sendEmail] RESEND_API_KEY missing. Add it to .env.local and restart.",
+      );
+      return { success: false, error: t.notConfigured };
+    }
+
+    // ── Input extraction & sanitisation ──────────────────────────────────────
+
+    const name = stripControl(String(formData.get("name") ?? "").trim());
+    const email = String(formData.get("email") ?? "").trim().toLowerCase();
+    const message = stripControl(
+      String(formData.get("message") ?? "").trim(),
     );
-    return { success: false, error: t.sendFailed };
-  } finally {
-    if (timeoutId !== undefined) clearTimeout(timeoutId);
+    const consent = formData.get("consent");
+
+    if (!name || !email || !message) {
+      return { success: false, error: t.fillAll };
+    }
+
+    if (
+      name.length > MAX_NAME_LEN ||
+      email.length > MAX_EMAIL_LEN ||
+      message.length > MAX_MESSAGE_LEN
+    ) {
+      return { success: false, error: t.tooLong };
+    }
+
+    if (consent !== "on" && consent !== "true") {
+      return { success: false, error: t.consent };
+    }
+
+    if (!BASIC_EMAIL.test(email)) {
+      return { success: false, error: t.invalidEmail };
+    }
+
+    // ── Sender / recipient ───────────────────────────────────────────────────
+
+    const fromRaw = trimEnvValue(process.env.RESEND_FROM_EMAIL);
+    const from =
+      fromRaw.length > 0
+        ? fromRaw
+        : process.env.NODE_ENV === "production"
+          ? null
+          : "Kresic Digital Systems <onboarding@resend.dev>";
+
+    if (!from) {
+      devLog(
+        "warn",
+        "[sendEmail] RESEND_FROM_EMAIL is not set. Required in production.",
+      );
+      return { success: false, error: t.senderNotConfigured };
+    }
+
+    const toOverride = trimEnvValue(process.env.RESEND_TO_EMAIL);
+    const to =
+      toOverride.length > 0 && BASIC_EMAIL.test(toOverride)
+        ? toOverride
+        : SITE_EMAIL;
+
+    // ── Send with timeout ────────────────────────────────────────────────────
+
+    const resend = new Resend(apiKey);
+    const safeSubject = `New Lead: ${stripControl(name).slice(0, 80)} — Kresic Digital Systems`;
+
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    try {
+      const sendPromise = resend.emails.send({
+        from,
+        to: [to],
+        replyTo: email,
+        subject: safeSubject,
+        text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+        html: [
+          `<p><strong>Name:</strong> ${escapeHtml(name)}</p>`,
+          `<p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>`,
+          `<p><strong>Message:</strong></p>`,
+          `<p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>`,
+        ].join(""),
+      });
+
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(
+          () => reject(new Error("Resend API request timed out")),
+          RESEND_TIMEOUT_MS,
+        );
+      });
+
+      const { error } = await Promise.race([sendPromise, timeoutPromise]);
+
+      if (error) {
+        devLog("error", "[sendEmail] Resend error:", formatResendError(error));
+        return { success: false, error: t.sendFailed };
+      }
+
+      return { success: true };
+    } catch (err) {
+      devLog(
+        "error",
+        "[sendEmail] Send failed:",
+        err instanceof Error ? err.message : "[unknown]",
+      );
+      return { success: false, error: t.sendFailed };
+    } finally {
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
+    }
+  } catch {
+    // Top-level boundary: catches anything from headers(), formData.get(),
+    // or any other unanticipated throw. Never leaks internals to the client.
+    return {
+      success: false,
+      error: locale === "de" ? GENERIC_ERROR_DE : GENERIC_ERROR_EN,
+    };
   }
 }
