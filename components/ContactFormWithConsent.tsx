@@ -1,7 +1,7 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { sendEmail } from "@/app/actions/sendEmail";
 import type { LocaleCode } from "@/dictionaries/types";
@@ -32,6 +32,11 @@ export function ContactFormWithConsent({
     | { type: "error"; message: string }
     | null
   >(null);
+  const mountTs = useRef(0);
+
+  useEffect(() => {
+    mountTs.current = Date.now();
+  }, []);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,8 +44,8 @@ export function ContactFormWithConsent({
     const formData = new FormData(form);
     setFeedback(null);
 
-    // Avoid native `required` on the checkbox: browsers show that message in OS/browser
-    // language, not the site locale. Server still enforces consent with the same rule.
+    formData.set("_t", String(mountTs.current));
+
     const consent = formData.get("consent");
     if (consent !== "on" && consent !== "true") {
       setFeedback({ type: "error", message: labels.consentError });
@@ -52,6 +57,7 @@ export function ContactFormWithConsent({
       if (result.success) {
         setFeedback({ type: "success", message: labels.success });
         form.reset();
+        mountTs.current = Date.now();
       } else {
         setFeedback({ type: "error", message: result.error });
       }
@@ -66,6 +72,21 @@ export function ContactFormWithConsent({
       onSubmit={handleSubmit}
     >
       <input type="hidden" name="locale" value={locale} />
+
+      {/* Honeypot — invisible to real users, bots auto-fill it */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[-9999px] h-0 w-0 overflow-hidden opacity-0"
+      >
+        <label htmlFor="contact-website">Website</label>
+        <input
+          id="contact-website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
 
       {feedback ? (
         <div

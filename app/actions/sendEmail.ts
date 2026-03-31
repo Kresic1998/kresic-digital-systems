@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { Resend } from "resend";
 
 import { SITE_EMAIL } from "@/lib/site";
@@ -8,20 +9,62 @@ export type SendEmailResult =
   | { success: true }
   | { success: false; error: string };
 
+// ─── Limits ───────────────────────────────────────────────────────────────────
+
 const MAX_NAME_LEN = 200;
 const MAX_EMAIL_LEN = 320;
-const MAX_MESSAGE_LEN = 8000;
+const MAX_MESSAGE_LEN = 8_000;
+const RESEND_TIMEOUT_MS = 10_000;
+const MIN_SUBMIT_DELAY_MS = 2_000;
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX_REQUESTS = 3;
 
 const BASIC_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const CONTROL_CHARS = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
 
-/** Vercel/UI pastes sometimes wrap values in quotes; strip so Resend accepts `from`. */
-function trimEnvValue(value: string | undefined): string {
-  if (typeof value !== "string") return "";
-  let t = value.trim();
-  if (t.length >= 2 && ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'")))) {
+// ─── In-memory rate limiter ──────────────────────────────────────────────────
+// Effective while the serverless function stays warm. Cold starts reset the map,
+// which is an acceptable trade-off for a zero-dependency solution — the honeypot
+// and timing checks cover the gap.
+
+type RateEntry = { count: number; windowStart: number };
+const ipBucket = new Map<string, RateEntry>();
+let lastPurge = Date.now();
+
+function checkRate(ip: string): boolean {
+  const now = Date.now();
+  if (now - lastPurge > RATE_WINDOW_MS * 5) {
+    lastPurge = now;
+    for (const [k, v] of ipBucket) {
+      if (now - v.windowStart > RATE_WINDOW_MS * 2) ipBucket.delete(k);
+    }
+  }
+  const entry = ipBucket.get(ip);
+  if (!entry || now - entry.windowStart > RATE_WINDOW_MS) {
+    ipBucket.set(ip, { count: 1, windowStart: now });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_MAX_REQUESTS;
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function trimEnvValue(raw: string | undefined): string {
+  if (typeof raw !== "string") return "";
+  let t = raw.trim();
+  if (
+    t.length >= 2 &&
+    ((t.startsWith('"') && t.endsWith('"')) ||
+      (t.startsWith("'") && t.endsWith("'")))
+  ) {
     t = t.slice(1, -1).trim();
   }
   return t;
+}
+
+function stripControl(text: string): string {
+  return text.replace(CONTROL_CHARS, "");
 }
 
 function escapeHtml(text: string): string {
@@ -39,7 +82,6 @@ function messages(locale: string) {
     notConfigured: de
       ? "E-Mail-Versand ist nicht konfiguriert."
       : "Email service is not configured.",
-    /** Production requires RESEND_FROM_EMAIL; dev falls back to onboarding@resend.dev */
     senderNotConfigured: de
       ? "E-Mail-Absender ist für den Live-Betrieb nicht konfiguriert."
       : "Email sender is not configured for production.",
@@ -53,6 +95,9 @@ function messages(locale: string) {
     invalidEmail: de
       ? "Bitte geben Sie eine gültige E-Mail-Adresse ein."
       : "Please enter a valid email address.",
+    rateLimited: de
+      ? "Zu viele Anfragen. Bitte versuchen Sie es in einer Minute erneut."
+      : "Too many requests. Please try again in a minute.",
     sendFailed: de
       ? "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
       : "Could not send your message. Please try again later.",
@@ -61,7 +106,6 @@ function messages(locale: string) {
 
 const isDev = process.env.NODE_ENV === "development";
 
-/** Resend returns `error` as JSON (often `{ name, message, statusCode }`); log a full string for Vercel. */
 function formatResendError(error: unknown): string {
   if (error == null) return String(error);
   if (typeof error === "string") return error;
@@ -77,16 +121,48 @@ function formatResendError(error: unknown): string {
   }
 }
 
-export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
-  // Locale is a UI hint for error message language only; unknown values default to EN
+// ─── Main action ──────────────────────────────────────────────────────────────
+
+export async function sendEmail(
+  formData: FormData,
+): Promise<SendEmailResult> {
   const rawLocale = String(formData.get("locale") ?? "en");
   const locale = rawLocale === "de" ? "de" : "en";
   const t = messages(locale);
 
-  // RESEND_API_KEY must be trimmed — Vercel dashboard pastes often include trailing whitespace
+  // ── IP-based rate limiting ─────────────────────────────────────────────────
+
+  const h = await headers();
+  const ip =
+    h.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    h.get("x-real-ip") ??
+    "unknown";
+
+  if (checkRate(ip)) {
+    console.warn(`[sendEmail] Rate-limited IP: ${ip}`);
+    return { success: false, error: t.rateLimited };
+  }
+
+  // ── Honeypot (invisible field filled only by bots) ─────────────────────────
+
+  const honeypot = String(formData.get("website") ?? "");
+  if (honeypot.length > 0) {
+    console.warn(`[sendEmail] Honeypot triggered, IP: ${ip}`);
+    return { success: true };
+  }
+
+  // ── Timing gate (reject sub-human submit speed) ────────────────────────────
+
+  const ts = Number(formData.get("_t") || 0);
+  if (ts > 0 && Date.now() - ts < MIN_SUBMIT_DELAY_MS) {
+    console.warn(`[sendEmail] Timing check failed, IP: ${ip}`);
+    return { success: true };
+  }
+
+  // ── API key ────────────────────────────────────────────────────────────────
+
   const apiKey = trimEnvValue(process.env.RESEND_API_KEY);
 
-  // Development-only diagnostics — never runs in production
   if (isDev) {
     console.log("[sendEmail] API Key present:", apiKey.length > 0);
   }
@@ -95,22 +171,22 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
     console.warn(
       isDev
         ? "[sendEmail] RESEND_API_KEY missing. Add it to .env.local and restart."
-        : "[sendEmail] RESEND_API_KEY is missing on this deployment. Set it in the host (e.g. Vercel) for Production and Preview, then redeploy."
+        : "[sendEmail] RESEND_API_KEY is missing on this deployment. Set it in the host (e.g. Vercel) for Production and Preview, then redeploy.",
     );
     return { success: false, error: t.notConfigured };
   }
 
-  const name = String(formData.get("name") ?? "").trim();
-  const email = String(formData.get("email") ?? "").trim();
-  const message = String(formData.get("message") ?? "").trim();
+  // ── Input extraction & sanitisation ────────────────────────────────────────
+
+  const name = stripControl(String(formData.get("name") ?? "").trim());
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const message = stripControl(String(formData.get("message") ?? "").trim());
   const consent = formData.get("consent");
 
-  // Server-side required-field validation (never trust HTML `required` alone)
   if (!name || !email || !message) {
     return { success: false, error: t.fillAll };
   }
 
-  // Server-side length enforcement (mirrors client maxLength attributes)
   if (
     name.length > MAX_NAME_LEN ||
     email.length > MAX_EMAIL_LEN ||
@@ -119,19 +195,17 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
     return { success: false, error: t.tooLong };
   }
 
-  // Server-side consent check (GDPR/DACH requirement — double-keyed)
   if (consent !== "on" && consent !== "true") {
     return { success: false, error: t.consent };
   }
 
-  // Strict email format validation
   if (!BASIC_EMAIL.test(email)) {
     return { success: false, error: t.invalidEmail };
   }
 
-  // Sender address: RESEND_FROM_EMAIL must be a verified domain in production.
-  // onboarding@resend.dev is a Resend test sender — reject it in production to avoid delivery failures.
-  const fromRaw = process.env.RESEND_FROM_EMAIL?.trim() ?? "";
+  // ── Sender / recipient ─────────────────────────────────────────────────────
+
+  const fromRaw = trimEnvValue(process.env.RESEND_FROM_EMAIL);
   const from =
     fromRaw.length > 0
       ? fromRaw
@@ -142,24 +216,31 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
   if (!from) {
     console.warn(
       isDev
-        ? "[sendEmail] RESEND_FROM_EMAIL is not set. Required when simulating production (e.g. next start)."
-        : "[sendEmail] RESEND_FROM_EMAIL is not set. Production requires a verified Resend sender (e.g. Name <noreply@yourdomain.com>). Set it on the host and redeploy."
+        ? "[sendEmail] RESEND_FROM_EMAIL is not set."
+        : "[sendEmail] RESEND_FROM_EMAIL is not set. Production requires a verified Resend sender.",
     );
     return { success: false, error: t.senderNotConfigured };
   }
 
   const toOverride = trimEnvValue(process.env.RESEND_TO_EMAIL);
   const to =
-    toOverride.length > 0 && BASIC_EMAIL.test(toOverride) ? toOverride : SITE_EMAIL;
+    toOverride.length > 0 && BASIC_EMAIL.test(toOverride)
+      ? toOverride
+      : SITE_EMAIL;
+
+  // ── Send with timeout ──────────────────────────────────────────────────────
 
   const resend = new Resend(apiKey);
+  const safeSubject = `New Lead: ${stripControl(name).slice(0, 80)} — Kresic Digital Systems`;
+
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   try {
-    const { error } = await resend.emails.send({
+    const sendPromise = resend.emails.send({
       from,
       to: [to],
       replyTo: email,
-      subject: `New Lead: ${name} from Kresic Digital Systems`,
+      subject: safeSubject,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
       html: [
         `<p><strong>Name:</strong> ${escapeHtml(name)}</p>`,
@@ -169,9 +250,21 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
       ].join(""),
     });
 
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timeoutId = setTimeout(
+        () => reject(new Error("Resend API request timed out")),
+        RESEND_TIMEOUT_MS,
+      );
+    });
+
+    const { error } = await Promise.race([sendPromise, timeoutPromise]);
+
     if (error) {
       console.error("[sendEmail] Resend error:", formatResendError(error));
-      console.error("[sendEmail] Resend error (raw):", JSON.stringify(error));
+      console.error(
+        "[sendEmail] Resend error (raw):",
+        JSON.stringify(error),
+      );
       return { success: false, error: t.sendFailed };
     }
 
@@ -179,8 +272,10 @@ export async function sendEmail(formData: FormData): Promise<SendEmailResult> {
   } catch (err) {
     console.error(
       "[sendEmail] Send failed:",
-      err instanceof Error ? err.message : err
+      err instanceof Error ? err.message : err,
     );
     return { success: false, error: t.sendFailed };
+  } finally {
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
   }
 }
