@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 
-/** Hero 3D canvas — largest three.js cost; load only on the client after paint. */
-function HeroVisualSkeleton() {
+/** Static hero background until WebGL mounts (TBT / FCP friendly). */
+export function HeroCanvasPlaceholder() {
   return (
     <div
       className="pointer-events-none absolute inset-0 z-0 min-h-full w-full overflow-hidden bg-terminal-bg"
@@ -12,8 +12,12 @@ function HeroVisualSkeleton() {
   );
 }
 
-/** Project card header visuals — same aspect as DataFlowVisual / siblings. */
-function CardThreeSkeleton({ className }: { className?: string }) {
+function HeroVisualSkeleton() {
+  return <HeroCanvasPlaceholder />;
+}
+
+/** Project card header placeholder (matches live Three.js card height). */
+export function CardVisualPlaceholder({ className }: { className?: string }) {
   return (
     <div
       className={[
@@ -34,17 +38,17 @@ export const DynamicHeroVisual = dynamic(
 
 export const DynamicDataFlowVisual = dynamic(
   () => import("@/components/DataFlowVisual"),
-  { ssr: false, loading: () => <CardThreeSkeleton /> },
+  { ssr: false, loading: () => <CardVisualPlaceholder /> },
 );
 
 export const DynamicInfrastructureGrid = dynamic(
   () => import("@/components/InfrastructureGrid"),
-  { ssr: false, loading: () => <CardThreeSkeleton /> },
+  { ssr: false, loading: () => <CardVisualPlaceholder /> },
 );
 
 export const DynamicMarketPulseVisual = dynamic(
   () => import("@/components/MarketPulseVisual"),
-  { ssr: false, loading: () => <CardThreeSkeleton /> },
+  { ssr: false, loading: () => <CardVisualPlaceholder /> },
 );
 
 export const projectHeaderVisuals = [

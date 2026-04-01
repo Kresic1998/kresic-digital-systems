@@ -1,4 +1,12 @@
 import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+
+/**
+ * Explicit home metadata + canonical help Lighthouse SEO on `/`.
+ */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 /**
  * Server Component shell: the interactive landing UI is code-split into a

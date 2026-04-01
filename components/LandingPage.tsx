@@ -2,13 +2,16 @@
 
 import type { ReactElement, SVGProps } from "react";
 import { useState, useCallback, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 
-import { ContactFormWithConsent } from "@/components/ContactFormWithConsent";
+import { DeferHeavyChild, MountWhenVisible } from "@/components/DeferMount";
 import { FadeIn } from "@/components/FadeIn";
 import {
+  CardVisualPlaceholder,
   DynamicHeroVisual,
+  HeroCanvasPlaceholder,
   projectHeaderVisuals,
 } from "@/components/landing/HeavyVisuals";
 import { KDSLogo } from "@/components/Logo";
@@ -20,6 +23,22 @@ import {
   SITE_MAILTO,
 } from "@/lib/site";
 import { useI18n } from "@/lib/i18n";
+
+const ContactFormLazy = dynamic(
+  () =>
+    import("@/components/ContactFormWithConsent").then((m) => ({
+      default: m.ContactFormWithConsent,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="min-h-[min(24rem,55vh)] rounded-xl border border-white/5 bg-slate-900/40"
+        aria-hidden
+      />
+    ),
+  },
+);
 
 type IconComponent = (props: SVGProps<SVGSVGElement>) => ReactElement;
 
@@ -188,6 +207,7 @@ function IconProjectLock(props: SVGProps<SVGSVGElement>) {
 
 function SiteHeader() {
   const { t } = useI18n();
+  const a11y = t.a11y;
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const close = useCallback(() => setMobileOpen(false), []);
@@ -213,6 +233,7 @@ function SiteHeader() {
         <Link
           href="#hero"
           onClick={close}
+          aria-label={`${BRAND_NAME} — ${a11y.logoToHome}`}
           className="inline-flex min-h-[2.75rem] min-w-0 shrink items-center gap-2 rounded-md text-sm font-semibold leading-tight tracking-tight text-white sm:min-w-[2.75rem] sm:shrink-0 sm:gap-3"
         >
           <KDSLogo className="h-7 w-auto shrink-0 text-white sm:h-8 md:h-9" />
@@ -221,7 +242,7 @@ function SiteHeader() {
 
         {/* Desktop nav */}
         <nav
-          className="hidden items-center gap-8 text-sm font-medium text-slate-400 md:flex"
+          className="hidden items-center gap-8 text-sm font-medium text-slate-300 md:flex"
           aria-label="Primary"
         >
           {nav.map((item) => (
@@ -251,7 +272,7 @@ function SiteHeader() {
             onClick={() => setMobileOpen((o) => !o)}
             className="inline-flex min-h-[2.75rem] min-w-[2.75rem] items-center justify-center rounded-lg text-slate-300 transition-colors hover:bg-white/10 hover:text-white md:hidden"
             aria-expanded={mobileOpen}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-label={mobileOpen ? a11y.closeMenu : a11y.openMenu}
           >
             {mobileOpen ? (
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M18 6 6 18M6 6l12 12" /></svg>
@@ -305,7 +326,9 @@ function HeroSection() {
       className="scroll-mt-24 relative isolate flex min-h-[100dvh] flex-col overflow-x-hidden bg-transparent pb-10 pt-20 sm:pb-24 sm:pt-28 md:pb-32 md:pt-32 lg:pb-40"
       aria-labelledby="hero-heading"
     >
-      <DynamicHeroVisual />
+      <DeferHeavyChild fallback={<HeroCanvasPlaceholder />}>
+        <DynamicHeroVisual />
+      </DeferHeavyChild>
       <div
         className="pointer-events-none absolute inset-0 z-[1] bg-transparent opacity-100"
         aria-hidden
@@ -529,7 +552,15 @@ function ProjectsSection() {
               <FadeIn key={project.name} delay={index * 0.12} className="min-h-0">
                 <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/35 shadow-none transition duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02] hover:border-white/20 hover:bg-slate-900/50 hover:shadow-2xl hover:shadow-black/50">
                   <div className="relative isolate w-full shrink-0 overflow-hidden bg-black/40">
-                    <HeaderVisual className="w-full rounded-none border-0 shadow-none ring-0" />
+                    <MountWhenVisible
+                      className="relative block w-full min-h-48"
+                      rootMargin="100px"
+                      fallback={
+                        <CardVisualPlaceholder className="w-full rounded-none border-0 shadow-none ring-0" />
+                      }
+                    >
+                      <HeaderVisual className="w-full rounded-none border-0 shadow-none ring-0" />
+                    </MountWhenVisible>
                     <div
                       className="pointer-events-none absolute inset-x-0 bottom-0 z-[6] h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"
                       aria-hidden
@@ -670,7 +701,18 @@ function ContactSection() {
           </FadeIn>
           <FadeIn delay={0.1}>
             <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 shadow-none sm:p-8">
-              <ContactFormWithConsent labels={t.form} locale={locale} />
+              <MountWhenVisible
+                className="min-h-[min(24rem,55vh)]"
+                rootMargin="180px"
+                fallback={
+                  <div
+                    className="min-h-[min(24rem,55vh)] rounded-xl border border-white/5 bg-slate-900/30"
+                    aria-hidden
+                  />
+                }
+              >
+                <ContactFormLazy labels={t.form} locale={locale} />
+              </MountWhenVisible>
             </div>
           </FadeIn>
           <div className="lg:col-span-2">
@@ -685,12 +727,13 @@ function ContactSection() {
 }
 
 function SiteFooter() {
+  const { t } = useI18n();
   return (
     <footer className="border-t border-white/[0.08] bg-terminal-bg py-8 sm:py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 sm:gap-8 sm:px-6 lg:px-8">
         <KDSLogo className="h-12 w-auto text-slate-300 sm:h-14 md:h-16" />
         <div className="flex w-full flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-400">
             © 2026 Danijel Kresic | Kresic Digital Systems
           </p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-medium">
@@ -698,7 +741,8 @@ function SiteFooter() {
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-400 transition-colors hover:text-white"
+              aria-label={t.a11y.githubProfile}
+              className="text-slate-300 underline-offset-4 transition-colors hover:text-white hover:underline"
             >
               GitHub
             </Link>

@@ -7,6 +7,12 @@
     "liveDemo": "Live Tech Demo"
   },
   "headerCta": "Request a project",
+  "a11y": {
+    "logoToHome": "Back to top of page",
+    "openMenu": "Open main menu",
+    "closeMenu": "Close main menu",
+    "githubProfile": "Danijel Kresic on GitHub (opens in a new tab)"
+  },
   "hero": {
     "kicker": "Kresic Digital Systems",
     "title": "Optimize and automate your business with smart digital solutions",

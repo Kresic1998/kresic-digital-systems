@@ -9,6 +9,12 @@ export type LandingDictionary = {
     liveDemo: string;
   };
   headerCta: string;
+  a11y: {
+    logoToHome: string;
+    openMenu: string;
+    closeMenu: string;
+    githubProfile: string;
+  };
   hero: {
     kicker: string;
     title: string;
