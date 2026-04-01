@@ -8,43 +8,82 @@ import {
 } from "react";
 
 /**
- * Delays mounting children until after the first paint window so FCP/LCP can
- * complete before heavy WebGL / long tasks run (reduces TBT on slow devices).
+ * Schedules work after React hydration has committed and the browser has
+ * painted, then waits for an idle slice (or `timeout`) before running `fn`.
+ * Reduces TBT by keeping Three.js off the critical post-hydration long tasks.
+ */
+export function scheduleAfterHydrationIdle(
+  fn: () => void,
+  options: { delayMs: number; idleTimeoutMs?: number },
+): () => void {
+  const idleTimeoutMs = options.idleTimeoutMs ?? 2800;
+  let cancelled = false;
+  let idleId: number | undefined;
+  /** Browser timer handles (avoid NodeJS.Timeout vs number mismatch in Next types). */
+  let timer: number | undefined;
+  let innerTimer: number | undefined;
+  let raf1 = 0;
+  let raf2 = 0;
+
+  const runIdle = () => {
+    if (cancelled) return;
+    const go = () => {
+      if (!cancelled) fn();
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      idleId = window.requestIdleCallback(go, { timeout: idleTimeoutMs });
+    } else {
+      innerTimer = window.setTimeout(go, 280) as unknown as number;
+    }
+  };
+
+  raf1 = window.requestAnimationFrame(() => {
+    raf2 = window.requestAnimationFrame(() => {
+      timer = window.setTimeout(runIdle, options.delayMs) as unknown as number;
+    });
+  });
+
+  return () => {
+    cancelled = true;
+    window.cancelAnimationFrame(raf1);
+    if (raf2) window.cancelAnimationFrame(raf2);
+    if (timer !== undefined) window.clearTimeout(timer);
+    if (innerTimer !== undefined) window.clearTimeout(innerTimer);
+    if (idleId !== undefined && typeof window.cancelIdleCallback === "function") {
+      window.cancelIdleCallback(idleId);
+    }
+  };
+}
+
+/**
+ * Delays mounting children until after hydration, two animation frames, an
+ * optional minimum delay (higher on narrow viewports), then `requestIdleCallback`.
+ * Keeps FCP/LCP and hydration long tasks ahead of WebGL instantiation.
  */
 export function DeferHeavyChild({
   children,
   fallback,
-  delayMs = 500,
+  delayMs = 600,
 }: {
   children: ReactNode;
   fallback: ReactNode;
-  /** Minimum wait before scheduling work; then prefers an idle slice (caps wait). */
+  /** Base delay after rAF×2; bumped on viewports ≤767px so mobile TBT stays lower. */
   delayMs?: number;
 }) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    let idleId: number | undefined;
+    const isNarrow =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(max-width: 767px)").matches;
+    const effectiveDelay = isNarrow ? Math.max(delayMs, 1150) : delayMs;
 
-    const timer = window.setTimeout(() => {
-      const go = () => {
-        if (!cancelled) setShow(true);
-      };
-      if (typeof window.requestIdleCallback === "function") {
-        idleId = window.requestIdleCallback(go, { timeout: 1200 });
-      } else {
-        go();
-      }
-    }, delayMs);
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-      if (idleId !== undefined && typeof window.cancelIdleCallback === "function") {
-        window.cancelIdleCallback(idleId);
-      }
-    };
+    return scheduleAfterHydrationIdle(
+      () => {
+        setShow(true);
+      },
+      { delayMs: effectiveDelay, idleTimeoutMs: 3000 },
+    );
   }, [delayMs]);
 
   return show ? children : fallback;

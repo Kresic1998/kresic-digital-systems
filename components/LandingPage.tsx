@@ -15,7 +15,6 @@ import {
   projectHeaderVisuals,
 } from "@/components/landing/HeavyVisuals";
 import { KDSLogo } from "@/components/Logo";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   BRAND_NAME,
   GITHUB_URL,
@@ -36,6 +35,19 @@ const ContactFormLazy = dynamic(
         className="min-h-[min(24rem,55vh)] rounded-xl border border-white/5 bg-slate-900/40"
         aria-hidden
       />
+    ),
+  },
+);
+
+const LanguageSwitcherLazy = dynamic(
+  () =>
+    import("@/components/LanguageSwitcher").then((m) => ({
+      default: m.LanguageSwitcher,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-11 min-w-[5.25rem] shrink-0" aria-hidden />
     ),
   },
 );
@@ -257,7 +269,7 @@ function SiteHeader() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-1 sm:gap-4">
-          <LanguageSwitcher />
+          <LanguageSwitcherLazy />
           <Link
             href="#contact"
             onClick={close}

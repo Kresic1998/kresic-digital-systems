@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 
 import { DeferredThirdPartyScripts } from "@/components/DeferredThirdPartyScripts";
 import { GlobalLegalFooter } from "@/components/GlobalLegalFooter";
@@ -12,6 +12,16 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
+  preload: true,
+});
+
+/** Wordmark inside `KDSLogo` SVG — preloaded subset, swap to avoid invisible text during load. */
+const kdsLogoMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: "700",
+  display: "swap",
+  variable: "--font-kds-logo-mono",
+  preload: true,
 });
 
 const siteTitle = `${BRAND_NAME} — B2B Software & FinTech Engineering` as const;
@@ -66,7 +76,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${inter.variable} scroll-smooth dark`}
+      className={`${inter.variable} ${kdsLogoMono.variable} scroll-smooth dark`}
       suppressHydrationWarning
     >
       <body className="min-h-screen overflow-x-hidden bg-terminal-bg font-sans text-slate-100 antialiased">

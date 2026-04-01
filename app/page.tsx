@@ -1,5 +1,6 @@
-import dynamic from "next/dynamic";
 import type { Metadata } from "next";
+
+import { LandingPage } from "@/components/LandingPage";
 
 /**
  * Explicit home metadata + canonical help Lighthouse SEO on `/`.
@@ -9,38 +10,11 @@ export const metadata: Metadata = {
 };
 
 /**
- * Server Component shell: the interactive landing UI is code-split into a
- * separate client chunk so the main thread parses less JS before hydration.
- * Heavy Three.js visuals are additionally lazy-loaded inside `LandingPage`
- * via `components/landing/HeavyVisuals.tsx` (ssr: false).
+ * `LandingPage` is a Client Component but is still **SSR’d** in the first HTML
+ * response so the header logo (typical LCP) paints immediately. Heavy Three.js
+ * stays deferred via `DeferMount` + `next/dynamic` in `landing/HeavyVisuals`.
+ * Non-critical UI (e.g. language switcher) is lazy-loaded inside the page.
  */
-const LandingPage = dynamic(
-  () =>
-    import("@/components/LandingPage").then((mod) => ({
-      default: mod.LandingPage,
-    })),
-  {
-    loading: () => <LandingPageLoadingFallback />,
-  },
-);
-
-function LandingPageLoadingFallback() {
-  return (
-    <div
-      className="min-h-[100dvh] bg-terminal-bg"
-      aria-busy="true"
-      aria-label="Loading"
-    >
-      <div className="mx-auto max-w-6xl px-4 pt-24 pb-32 sm:px-6 lg:px-8">
-        <div className="h-9 w-40 animate-pulse rounded-lg bg-white/[0.06]" />
-        <div className="mt-10 h-12 max-w-xl animate-pulse rounded-lg bg-white/[0.05]" />
-        <div className="mt-4 h-12 max-w-lg animate-pulse rounded-lg bg-white/[0.04]" />
-        <div className="mt-16 h-11 w-full max-w-sm animate-pulse rounded-full bg-white/[0.05]" />
-      </div>
-    </div>
-  );
-}
-
 export default function HomePage() {
   return <LandingPage />;
 }

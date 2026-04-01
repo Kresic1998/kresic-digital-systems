@@ -1,6 +1,8 @@
 # Kresic Digital Systems — Portfolio & Marketing Site
 
-Production codebase for **Kresic Digital Systems** (e.g. **kresic.digital**): a B2B-facing landing experience with EN/DE copy, a Resend-backed contact flow aligned with DACH expectations, and a separate market-analytics demo route. The UI is **dark-first** (`terminal` palette, `dark` class on `<html>`), with a **Three.js** hero scene and lightweight scroll-driven motion on the main page.
+Production codebase for **Kresic Digital Systems**: a B2B-facing landing experience with EN/DE copy, a Resend-backed contact flow aligned with DACH expectations, and a separate market-analytics demo route. The UI is **dark-first** (`terminal` palette, `dark` class on `<html>`), with a **Three.js** hero scene and lightweight scroll-driven motion on the main page.
+
+**Live site:** [https://kresicds.com/](https://kresicds.com/)
 
 ---
 
@@ -36,7 +38,7 @@ This is not a generic template; structure and copy reflect how the business is p
 
 ## Architecture notes (senior-level)
 
-- **Client vs server boundaries** — `Providers.tsx` wraps the tree with `I18nProvider`. Heavy interactivity (language switch, contact form pending state, hero canvas) lives in client components; legal pages and layout metadata stay server-centric where possible.
+- **Client vs server boundaries** — `Providers.tsx` wraps the tree with `I18nProvider`. `app/page.tsx` is a Server Component that renders `LandingPage` (SSR’d for fast LCP); heavy **Three.js** visuals load on the client (`next/dynamic`, `ssr: false`) with deferred / viewport-gated mounting where applicable (`components/DeferMount.tsx`, `components/landing/HeavyVisuals.tsx`). Legal pages and layout metadata stay server-centric where possible.
 - **i18n** — No route-based `[locale]` segments: locale is UI state. All visible strings for the landing flow go through dictionaries so EN/DE stay in sync. The contact form posts a hidden `locale` field so **server-side validation errors** match the active language.
 - **Consent & native validation** — The form uses **`noValidate`** so the browser does not show OS-localized `required` tooltips on the consent checkbox. Consent is enforced **in submit handler** (message from `form.consentError`) and **again in the Server Action** (`consent === "on" || consent === "true"`).
 - **XSS hardening in email** — Outbound HTML from user fields passes through `escapeHtml()` before being embedded in the Resend payload.
@@ -52,6 +54,8 @@ This is not a generic template; structure and copy reflect how the business is p
 | `/demo/market-analytics` | Interactive demo; metadata discourages indexing. |
 | `/impressum` | Imprint (TMG-oriented). |
 | `/datenschutz` | Privacy notice (DSGVO-oriented). |
+| `/sitemap.xml` | Generated sitemap (`app/sitemap.ts`). |
+| `/robots.txt` | Crawl rules + sitemap URL (`app/robots.ts`). |
 
 ---
 
@@ -61,23 +65,23 @@ This is not a generic template; structure and copy reflect how the business is p
 .
 ├── app/
 │   ├── actions/sendEmail.ts       # Resend Server Action + validation
-│   ├── demo/market-analytics/    # Quant-style terminal demo
+│   ├── demo/market-analytics/     # Quant-style terminal demo
 │   ├── impressum/ | datenschutz/
-│   ├── layout.tsx                # Fonts, metadata, root <html className="… dark">
+│   ├── layout.tsx                 # Fonts, metadata, root <html className="… dark">
 │   ├── globals.css
-│   └── page.tsx                  # → LandingPage
+│   ├── page.tsx                   # Server shell; imports LandingPage (SSR + hydrate)
+│   ├── robots.ts | sitemap.ts     # /robots.txt, /sitemap.xml
+│   └── …
 ├── components/
-│   ├── LandingPage.tsx           # Sections, header/footer, work grid
-│   ├── HeroVisual.tsx            # Three.js hero (container-bound)
-│   ├── Logo.tsx                  # KDS lockup (header/footer)
-│   ├── KdsMonogramLogo.tsx       # SVG monogram (optional / legacy use)
-│   ├── DataFlowVisual.tsx        # Work card header art
-│   ├── InfrastructureGrid.tsx
-│   ├── MarketPulseVisual.tsx
+│   ├── LandingPage.tsx            # Sections, header/footer, work grid
+│   ├── landing/HeavyVisuals.tsx   # dynamic() wrappers for Three.js scenes
+│   ├── DeferMount.tsx             # idle / intersection gates for heavy UI
+│   ├── DeferredThirdPartyScripts.tsx  # optional next/script lazyOnload
+│   ├── HeroVisual.tsx             # Three.js hero
+│   ├── DataFlowVisual.tsx | InfrastructureGrid.tsx | MarketPulseVisual.tsx
 │   ├── ContactFormWithConsent.tsx
-│   ├── LanguageSwitcher.tsx
-│   ├── FadeIn.tsx
-│   └── Providers.tsx
+│   ├── Logo.tsx | LanguageSwitcher.tsx | FadeIn.tsx | Providers.tsx
+│   └── …
 ├── dictionaries/
 │   ├── types.ts                  # LandingDictionary
 │   ├── en.json | de.json
@@ -124,7 +128,8 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+- **Local:** [http://localhost:3000](http://localhost:3000)
+- **Production:** [https://kresicds.com/](https://kresicds.com/)
 
 | Command | Use |
 |---------|-----|
@@ -140,7 +145,7 @@ Before release: **`npm run build`** should complete cleanly; keep **`npx tsc --n
 ## Deployment (Vercel)
 
 1. Connect the Git repository and import the project.
-2. **Settings → Environment Variables:** set `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and `NEXT_PUBLIC_SITE_URL` for Production (and Preview if desired).
+2. **Settings → Environment Variables:** set `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, and `NEXT_PUBLIC_SITE_URL` for Production (and Preview if desired), per `.env.example` (no trailing slash on `NEXT_PUBLIC_SITE_URL`).
 3. **Redeploy** after changing variables — changes are not always picked up automatically.
 
 ---

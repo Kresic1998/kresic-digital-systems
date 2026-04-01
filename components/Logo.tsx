@@ -67,7 +67,10 @@ export function KDSLogo({ className, ...props }: KDSLogoProps) {
         textAnchor="middle"
         fill="currentColor"
         style={{
-          font: "700 22px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+          fontWeight: 700,
+          fontSize: 22,
+          fontFamily:
+            "var(--font-kds-logo-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
           letterSpacing: "0.2em",
         }}
       >
