@@ -102,8 +102,11 @@ This is not a generic template; structure and copy reflect how the business is p
 | `RESEND_API_KEY` | Yes (prod) | Send contact emails via Resend. |
 | `RESEND_FROM_EMAIL` | Yes (prod) | Verified sender, e.g. `Name <noreply@yourdomain.com>` or plain `you@verified-domain.com`. |
 | `RESEND_TO_EMAIL` | No | Override contact-form **recipient**; default is `SITE_EMAIL` in `lib/site.ts`. |
+| `NEXT_PUBLIC_DEFERRED_SCRIPT_SRC` | No | Optional analytics/pixel script URL; loaded with `next/script` `lazyOnload`. Update CSP in `next.config.mjs` if the origin is not allowed. |
 
 Copy `.env.example` → `.env.local` and fill values. Never commit `.env.local`.
+
+To inspect client bundle composition after `npm run build`, use e.g. `@next/bundle-analyzer` or Chrome DevTools → **Coverage**; chunk hashes (e.g. `page-*.js`) change each build.
 
 ---
 

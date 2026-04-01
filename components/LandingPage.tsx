@@ -6,13 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ContactFormWithConsent } from "@/components/ContactFormWithConsent";
-import DataFlowVisual from "@/components/DataFlowVisual";
 import { FadeIn } from "@/components/FadeIn";
-import HeroVisual from "@/components/HeroVisual";
-import InfrastructureGrid from "@/components/InfrastructureGrid";
+import {
+  DynamicHeroVisual,
+  projectHeaderVisuals,
+} from "@/components/landing/HeavyVisuals";
 import { KDSLogo } from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import MarketPulseVisual from "@/components/MarketPulseVisual";
 import {
   BRAND_NAME,
   GITHUB_URL,
@@ -186,12 +186,6 @@ function IconProjectLock(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-const projectHeaderVisuals = [
-  DataFlowVisual,
-  InfrastructureGrid,
-  MarketPulseVisual,
-] as const;
-
 function SiteHeader() {
   const { t } = useI18n();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -311,7 +305,7 @@ function HeroSection() {
       className="scroll-mt-24 relative isolate flex min-h-[100dvh] flex-col overflow-x-hidden bg-transparent pb-10 pt-20 sm:pb-24 sm:pt-28 md:pb-32 md:pt-32 lg:pb-40"
       aria-labelledby="hero-heading"
     >
-      <HeroVisual />
+      <DynamicHeroVisual />
       <div
         className="pointer-events-none absolute inset-0 z-[1] bg-transparent opacity-100"
         aria-hidden

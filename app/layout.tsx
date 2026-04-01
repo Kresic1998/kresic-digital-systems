@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
+import { DeferredThirdPartyScripts } from "@/components/DeferredThirdPartyScripts";
 import { GlobalLegalFooter } from "@/components/GlobalLegalFooter";
 import { Providers } from "@/components/Providers";
 import { BRAND_NAME } from "@/lib/site";
@@ -76,6 +77,7 @@ export default function RootLayout({
           Zum Inhalt springen
         </a>
         <Providers>{children}</Providers>
+        <DeferredThirdPartyScripts />
         <GlobalLegalFooter />
       </body>
     </html>
