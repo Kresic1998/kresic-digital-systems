@@ -15,9 +15,22 @@ import {
 } from "three";
 
 const IS_MOBILE = typeof window !== "undefined" && window.innerWidth < 768;
-const PARTICLE_COUNT = IS_MOBILE ? 2400 : 6000;
+/** 4 000 on mobile (up from 2 400): still a single Points draw call, single BufferGeometry. */
+const PARTICLE_COUNT = IS_MOBILE ? 4000 : 6000;
 const LINE_LINK_COUNT = IS_MOBILE ? 100 : 180;
 const RADIUS = 280;
+
+/** True on devices that can afford MSAA (>4 logical cores ≈ mid/high-end phone). */
+const ANTIALIAS =
+  typeof navigator !== "undefined" && navigator.hardwareConcurrency > 4;
+
+function makeDebounce(fn: () => void, ms: number) {
+  let t = 0;
+  return () => {
+    window.clearTimeout(t);
+    t = window.setTimeout(fn, ms);
+  };
+}
 
 export default function HeroVisual() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -51,15 +64,18 @@ export default function HeroVisual() {
     };
 
     const renderer = new WebGLRenderer({
-      antialias: !IS_MOBILE,
+      antialias: ANTIALIAS,
       alpha: true,
       powerPreference: "low-power",
+      precision: "mediump",
     });
     renderer.setSize(iw, ih);
-    renderer.setPixelRatio(IS_MOBILE ? 1 : Math.min(window.devicePixelRatio, 2));
+    /** Use real dPR but cap at 2 — sharp on Retina/AMOLED without killing fill rate. */
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.domElement.style.pointerEvents = "none";
     container.appendChild(renderer.domElement);
 
+    // ── Particles (single Points / single BufferGeometry = 1 draw call) ──────
     const particlesGeom = new BufferGeometry();
     const positions = new Float32Array(PARTICLE_COUNT * 3);
     const originalPositions = new Float32Array(PARTICLE_COUNT * 3);
@@ -107,6 +123,7 @@ export default function HeroVisual() {
     const pointCloud = new Points(particlesGeom, particlesMat);
     scene.add(pointCloud);
 
+    // ── Lines ─────────────────────────────────────────────────────────────────
     const lineMaxDistance = 40;
     const linesGeom = new BufferGeometry();
     const linePositions = new Float32Array(1500 * 6);
@@ -147,7 +164,9 @@ export default function HeroVisual() {
       particlesMat.size = w < 640 ? 1.35 : 1.8;
     };
 
-    const resizeObserver = new ResizeObserver(() => applySize());
+    /** Debounce resize so orientation-change on mobile fires only once per gesture. */
+    const debouncedApplySize = makeDebounce(applySize, 120);
+    const resizeObserver = new ResizeObserver(debouncedApplySize);
     resizeObserver.observe(container);
     applySize();
 

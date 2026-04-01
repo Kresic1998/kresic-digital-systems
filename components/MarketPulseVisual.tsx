@@ -14,6 +14,16 @@ import {
 
 const IS_MOBILE = typeof window !== "undefined" && window.innerWidth < 768;
 const SEGMENT_COUNT = IS_MOBILE ? 100 : 200;
+const ANTIALIAS =
+  typeof navigator !== "undefined" && navigator.hardwareConcurrency > 4;
+
+function makeDebounce(fn: () => void, ms: number) {
+  let t = 0;
+  return () => {
+    window.clearTimeout(t);
+    t = window.setTimeout(fn, ms);
+  };
+}
 
 type Props = { className?: string };
 
@@ -28,9 +38,9 @@ export default function MarketPulseVisual({ className }: Props) {
     const camera = new PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
     camera.position.z = 50;
 
-    const renderer = new WebGLRenderer({ antialias: !IS_MOBILE, alpha: true, powerPreference: "low-power" });
+    const renderer = new WebGLRenderer({ antialias: ANTIALIAS, alpha: true, powerPreference: "low-power", precision: "mediump" });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(IS_MOBILE ? 1 : Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     const canvas = renderer.domElement;
     Object.assign(canvas.style, { position: "absolute", left: "0", top: "0", width: "100%", height: "100%", zIndex: "0", display: "block" });
     container.appendChild(canvas);
@@ -78,11 +88,11 @@ export default function MarketPulseVisual({ className }: Props) {
     };
     animate();
 
-    const handleResize = () => {
+    const handleResize = makeDebounce(() => {
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(container.clientWidth, container.clientHeight);
-    };
+    }, 120);
     window.addEventListener("resize", handleResize);
 
     return () => {
